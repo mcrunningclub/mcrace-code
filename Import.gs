@@ -17,8 +17,11 @@ limitations under the License.
 
 function doPost(e) {
   const contents = e.postData.contents;
-  const {newRow : row, fullName : name} = appendNewRegistration_(contents);
-  checkAndSetPayment_(row, name);
+  const { newRow : row, member : member } = appendNewRegistration_(contents);
+  
+  const isPaid = checkAndSetPayment_(row, member);
+  const fullName = `${member.firstName} ${member.lastName}`;
+  notifyPaymentStatus_(isPaid, fullName);
 
   formatSpecificColumns();
 }
@@ -39,16 +42,13 @@ function appendNewRegistration_(postData) {
     return acc;
   }, new Array(entries.length));
 
-  // Get full name to return
-  const fullName = `${formatted[COL_MAP.firstName]} ${formatted[COL_MAP.lastName]}`;
-
   // Set formatted values in sheet
   const newRow = getLastRow_() + 1;
   const numCol = formatted.length;
   sheet.getRange(newRow, 1, 1, numCol).setValues([formatted]);
 
-  // Return GSheet row and full name
-  return {newRow : newRow, fullName : fullName};
+  // Return GSheet row and values for payment
+  return { newRow : newRow, member : formatted };
 
   /** Helper functions */
   function format(key) {
@@ -66,38 +66,53 @@ function appendNewRegistration_(postData) {
 }
 
 
-function getInfoForPayment(row) {
-  const sheet = GET_REGISTRATION_SHEET_();
-  const memberInfo = sheet.getSheetValues(row, 1, 1, -1)[0];
+function checkAndSetPayment_(row = getLastRow_(), info) {
+  // Get values from info or from sheet, and concatenate full name
+  info = info ? extractFromObj() : extractFromSheet()
+  
+  // Find member transaction using packaged info (name, payment method, ...)
+  const isPaid = checkPayment_(info);
+  if (isPaid) { setFeePaid_(row) };
 
-  const getInfo = (index) => memberInfo[index];
+  // Return true if member paid
+  return isPaid;
 
-  return {
-    fName : getInfo(COL_MAP.firstName), 
-    lName : getInfo(COL_MAP.lastName), 
-    email : getInfo(COL_MAP.email), 
-    paymentMethod : getInfo(COL_MAP.paymentMethod),
+  /** Helper Functions */
+  function extractFromObj() {
+    return {
+      fName : info.firstName, 
+      lName : info.lastName, 
+      email : info.email, 
+      paymentMethod : info.paymentMethod,
+    }
+  }
+
+  function extractFromSheet() {
+    const sheet = GET_REGISTRATION_SHEET_();
+    info = sheet.getSheetValues(row, 1, 1, -1)[0];
+
+    const getInfo = (index) => info[index];
+
+    return {
+      fName : getInfo(COL_MAP.firstName), 
+      lName : getInfo(COL_MAP.lastName), 
+      email : getInfo(COL_MAP.email), 
+      paymentMethod : getInfo(COL_MAP.paymentMethod),
+    }
   }
 }
 
 
-function checkAndSetPayment_(row = getLastRow_()) {
-  // Get values from sheet
-  const info = getInfoForPayment(row);
-  const memberName = `${info.fName} ${info.lName}`;
-  
-  // Find if member paid using chosen payment method
-  const isFound = checkPayment(info);
-
-  if (isFound) {
-    console.log(`Successfully found transaction email for ${memberName}!`);  // Log success message
-    return setFeePaid_(row);
+function notifyPaymentStatus_(isPaid, fullName) {
+  if (isPaid) {
+    console.log(`Successfully found transaction email for ${fullName}!`);  // Log success message;
   }
-
-  // Notify McRUN of missing payment
-  notifyUnidentifiedPayment_(memberName);  
-  console.error(`Unable to find payment confirmation email for ${memberName}. Please verify again.`);
-} 
+  else {
+    // Notify McRUN of missing payment
+    notifyUnidentifiedPayment_(fullName);  
+    console.error(`Unable to find payment confirmation email for ${fullName}. Please verify again.`);
+  }
+}
 
 
 /**
@@ -136,7 +151,8 @@ function createTestObj_(row) {
 
 
 function test() {
-  const contents = createTestObj_(8);
-  const {newRow : row, fullName : name} = appendNewRegistration_(contents);
-  //checkAndSetPayment_(row, name);
+  //const contents = createTestObj_(8);
+  checkAndSetPayment_(9, null);
+  
+  //const {newRow : row, fullName : name} = appendNewRegistration_(contents);
 }

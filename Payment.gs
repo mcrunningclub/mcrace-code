@@ -26,12 +26,12 @@ const INTERAC_LABEL = 'Fee Payments/Interac Emails';
 
 
 // Helper function for Interac and Zeffy cases
-function checkPayment({ fName, lName, email, paymentMethod }) {
+function checkPayment_({ fName, lName, email, paymentMethod }) {
   if (paymentMethod.includes('CC')) {
-    return checkZeffyPayment({ firstName: fName, lastName: lName, email: email });
+    return checkZeffyPayment_({ firstName: fName, lastName: lName, email: email });
   }
   else if (paymentMethod.includes('Interac')) {
-    return checkInteracPayment({ firstName: fName, lastName: lName });
+    return checkInteracPayment_({ firstName: fName, lastName: lName });
   }
 
   return false;
@@ -51,7 +51,7 @@ function checkPayment({ fName, lName, email, paymentMethod }) {
 
 function setFeePaid_(row) {
   const sheet = REGISTRATION_SHEET;
-  const currentDate = Utilities.formatDate(new Date(), TIMEZONE, 'MMM d, yyyy');
+  const currentDate = Utilities.formatDate(new Date(), TIMEZONE, 'yyyy-MM-dd');
 
   // Get 1-index for GSheet using column map
   const IS_PAID_COL = COL_MAP.paymentConfirmed + 1;
@@ -78,7 +78,7 @@ function setFeePaid_(row) {
  * 
  */
 
-function createSearchTerms(member) {
+function createSearchTerms_(member) {
   const lastNameHyphenated = (member.lastName).replace(/[-\s]/, '[-\\s]?'); // handle hyphenated last names
   const fullName = `${member.firstName}\\s+${lastNameHyphenated}`;
 
@@ -94,7 +94,7 @@ function createSearchTerms(member) {
 
 /// 1️⃣  👉 FUNCTIONS HANDLING ZEFFY TRANSACTIONS 👈  \\\
 
-function checkZeffyPayment(member) {
+function checkZeffyPayment_(member) {
   const sender = ZEFFY_EMAIL;
   const maxMatches = 3;
   const threads = getMatchingPayments_(sender, maxMatches);
@@ -113,7 +113,7 @@ function processZeffyThread_(thread, member) {
   let starredCount = 0;
   let isFoundInMessage = false;
 
-  const searchTerms = createSearchTerms(member);
+  const searchTerms = createSearchTerms_(member);
 
   for (const message of messages) {
     if (message.isStarred()) {
@@ -166,7 +166,7 @@ function cleanUpMatchedThread_(thread, label) {
  * @update  Apr 21, 2025
  */
 
-function checkInteracPayment(member) {
+function checkInteracPayment_(member) {
   const sender = INTERAC_EMAIL;
   const maxMatches = 10;
   const threads = getMatchingPayments_(sender, maxMatches);
@@ -184,7 +184,7 @@ function checkInteracPayment(member) {
 function processInteracThreads_(thread, member) {
   const messages = thread.getMessages();
 
-  const searchTerms = createSearchTerms(member);
+  const searchTerms = createSearchTerms_(member);
 
   for (message of messages) {
     const emailBody = message.getPlainBody();
@@ -209,11 +209,11 @@ function getGmailLabel_(labelName) {
   return GmailApp.getUserLabelByName(labelName);
 }
 
-// Get threads from search (from:sender, starting:yesterday, in:inbox)
-function getGmailSearchString_(sender) {
-  const yesterday = new Date(Date.now() - 86400000); // Subtract 1 day in milliseconds
-  const formattedYesterday = Utilities.formatDate(yesterday, TIMEZONE, 'yyyy/MM/dd');
-  return `from:(${sender}) in:inbox after:${formattedYesterday}`;
+// Get threads from search (from:sender, starting:minDate, in:inbox)
+function getGmailSearchString_(sender, offset) {
+  const minDate = new Date(Date.now() - offset);
+  const formattedDate = Utilities.formatDate(minDate, TIMEZONE, 'yyyy/MM/dd');
+  return `from:(${sender}) in:inbox after:${formattedDate}`;
 }
 
 
@@ -256,8 +256,9 @@ function getMatchingPayments_(sender, maxMatches) {
   if (getCurrentUserEmail_() !== CLUB_EMAIL) {
     throw new Error('Wrong account! Please switch to McRUN\'s Gmail account');
   }
-
-  const searchStr = getGmailSearchString_(sender);
+  
+  const dateOffset = 2 * 24 * 60 * 60 * 1000;   // 2 days in milliseconds
+  const searchStr = getGmailSearchString_(sender, dateOffset);
   let threads = [];
   let delay = 10 * 1000; // Start with 10 seconds
 
@@ -295,4 +296,3 @@ function notifyUnidentifiedPayment_(name) {
 
   GmailApp.sendEmail(email.to, email.subject, email.body, email.options);
 }
-
