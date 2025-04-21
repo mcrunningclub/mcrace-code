@@ -17,19 +17,124 @@ limitations under the License.
 
 function doPost(e) {
   const contents = e.postData.contents;
-  appendNewRegistration(contents);
+  const {newRow : row, fullName : name} = appendNewRegistration_(contents);
+  checkAndSetPayment_(row, name);
 }
 
 
-function appendNewRegistration(postData) {
+function getLastRow_() {
+  return GET_REGISTRATION_SHEET_().getLastRow();
+}
+
+
+function appendNewRegistration_(postData) {
   const sheet = GET_REGISTRATION_SHEET_();
   const entries = Object.entries(COL_MAP);
 
-  const values = entries.reduce((acc, [key, i]) => {
-    acc[i] = postData?.[key] ?? '';   // Prevent storing undefined
+  // Push values to respective index using key-index mapping
+  const formatted = entries.reduce((acc, [key, i]) => {
+    acc[i] = format(key);
     return acc;
   }, new Array(entries.length));
 
-  sheet.appendRow(values);
+  // Get full name to return
+  const fullName = `${formatted[COL_MAP.firstName]} ${formatted[COL_MAP.lastName]}`;
+
+  // Set formatted values in sheet
+  const newRow = getLastRow_() + 1;
+  const numCol = formatted.length;
+  sheet.getRange(newRow, 1, 1, numCol).setValues([formatted]);
+
+  // Return GSheet row and full name
+  return {newRow : newRow, fullName : fullName};
+
+  /** Helper functions */
+  function format(key) {
+    if (key === 'submissionTime') {
+      return formatTimestamp(postData?.[key]);
+    }
+    const val = postData?.[key] ?? '';   // Prevent storing undefined
+    return (typeof val === "string" ? val.trim() : val);
+  }
+
+  function formatTimestamp(raw) {
+    const timestamp = new Date(raw);
+    return Utilities.formatDate(timestamp,TIMEZONE, "yyyy-MM-dd HH:mm:ss");
+  }
 }
 
+
+function getInfoForPayment(row) {
+  const sheet = GET_REGISTRATION_SHEET_();
+  const memberInfo = sheet.getSheetValues(row, 1, 1, -1)[0];
+
+  const getInfo = (index) => memberInfo[index];
+
+  return {
+    fName : getInfo(COL_MAP.firstName), 
+    lName : getInfo(COL_MAP.lastName), 
+    email : getInfo(COL_MAP.email), 
+    paymentMethod : getInfo(COL_MAP.paymentMethod),
+  }
+}
+
+
+function checkAndSetPayment_(row = getLastRow_()) {
+  // Get values from sheet
+  const info = getInfoForPayment(row);
+  const memberName = `${info.fName} ${info.lName}`;
+  
+  // Find if member paid using chosen payment method
+  const isFound = checkPayment(info);
+
+  if (isFound) {
+    console.log(`Successfully found transaction email for ${memberName}!`);  // Log success message
+    return setFeePaid_(row);
+  }
+
+  // Notify McRUN of missing payment
+  notifyUnidentifiedPayment_(memberName);  
+  console.error(`Unable to find payment confirmation email for ${memberName}. Please verify again.`);
+} 
+
+
+/**
+ * Returns normalize str without accents.
+ * 
+ * @param {string} str  String to normalize.
+ * @return {string}  Stripped str.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Mar 5, 2025
+ */
+
+function removeDiacritics(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+
+/**
+ * Returns a packaged obj to use as test.
+ */
+
+function createTestObj_(row) {
+  const val = GET_REGISTRATION_SHEET_().getSheetValues(row, 1, 1, 19)[0];
+  const entries = Object.entries(COL_MAP);
+
+  const obj = entries.reduce((acc, [key, i]) => {
+    if (i < val.length) {
+      acc[key] = val[i];
+    }
+    return acc;
+  }, {});
+
+  console.log(obj);
+  return obj;
+}
+
+
+function test() {
+  const contents = createTestObj_(8);
+  const {newRow : row, fullName : name} = appendNewRegistration_(contents);
+  //checkAndSetPayment_(row, name);
+}
