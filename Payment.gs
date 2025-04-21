@@ -57,7 +57,7 @@ function setFeePaid_(row) {
   const IS_PAID_COL = COL_MAP.paymentConfirmed + 1;
   const PAYMENT_DATE_COL = COL_MAP.paymentDate + 1;
   
-  sheet.getRange(row, IS_PAID_COL).check();
+  sheet.getRange(row, IS_PAID_COL).setValue(true).insertCheckboxes();
   sheet.getRange(row, PAYMENT_DATE_COL).setValue(currentDate);
 }
 

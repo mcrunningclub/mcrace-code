@@ -19,6 +19,8 @@ function doPost(e) {
   const contents = e.postData.contents;
   const {newRow : row, fullName : name} = appendNewRegistration_(contents);
   checkAndSetPayment_(row, name);
+
+  formatSpecificColumns();
 }
 
 
