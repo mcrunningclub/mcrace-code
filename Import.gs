@@ -15,144 +15,49 @@ limitations under the License.
 */
 
 
+function appendToImport(reg) {
+  const importSheet = GET_IMPORT_SHEET_();
+  importSheet.appendRow([reg]);
+  return importSheet.getLastRow();
+}
+
+
 function doPost(e) {
-  const contents = e.postData.contents;
-  const { newRow : row, member : member } = appendNewRegistration_(contents);
-  
-  const isPaid = checkAndSetPayment_(row, member);
-  const fullName = `${member.firstName} ${member.lastName}`;
-  notifyPaymentStatus_(isPaid, fullName);
+  const data = e.postData.contents;
+  let outputMessage = 'Starting doPost...';
 
-  formatSpecificColumns();
-}
+  try {
+    // STEP 1 : Add to import sheet as backup
+    const newRow = appendToImport(data);
+    addToMsg(`Appended following post contents in Import (row ${newRow}): ${data}`);
 
+    // STEP 2 : Add processed post data in Registration
+    const registrationObj = JSON.parse(data);
+    const ret = addNewRegistration_(registrationObj);
+    addToMsg(`Added formatted data in Registration (row ${ret.newRow}): \n[${prettifyArr(ret.member)}\n]`);
 
-function getLastRow_() {
-  return GET_REGISTRATION_SHEET_().getLastRow();
-}
-
-
-function appendNewRegistration_(postData) {
-  const sheet = GET_REGISTRATION_SHEET_();
-  const entries = Object.entries(COL_MAP);
-
-  // Push values to respective index using key-index mapping
-  const formatted = entries.reduce((acc, [key, i]) => {
-    acc[i] = format(key);
-    return acc;
-  }, new Array(entries.length));
-
-  // Set formatted values in sheet
-  const newRow = getLastRow_() + 1;
-  const numCol = formatted.length;
-  sheet.getRange(newRow, 1, 1, numCol).setValues([formatted]);
-
-  // Return GSheet row and values for payment
-  return { newRow : newRow, member : formatted };
-
-  /** Helper functions */
-  function format(key) {
-    if (key === 'submissionTime') {
-      return formatTimestamp(postData?.[key]);
-    }
-    const val = postData?.[key] ?? '';   // Prevent storing undefined
-    return (typeof val === "string" ? val.trim() : val);
+    // STEP 3 : Invoke post-processing functions i.e. payment verification, sheet formatting, etc.
+    onNewRegistration_(ret);
+    addToMsg(`Completed 'onNewRegistration' successfully!`);
+  }
+  catch (error) {
+    addToMsg('Error! Could not complete doPost');
+    addToMsg(error.message);
+  }
+  finally {
+    return ContentService.createTextOutput(outputMessage);
   }
 
-  function formatTimestamp(raw) {
-    const timestamp = new Date(raw);
-    return Utilities.formatDate(timestamp,TIMEZONE, "yyyy-MM-dd HH:mm:ss");
-  }
-}
-
-
-function checkAndSetPayment_(row = getLastRow_(), info) {
-  // Get values from info or from sheet, and concatenate full name
-  info = info ? extractFromObj() : extractFromSheet()
-  
-  // Find member transaction using packaged info (name, payment method, ...)
-  const isPaid = checkPayment_(info);
-  if (isPaid) { setFeePaid_(row) };
-
-  // Return true if member paid
-  return isPaid;
-
-  /** Helper Functions */
-  function extractFromObj() {
-    return {
-      fName : info.firstName, 
-      lName : info.lastName, 
-      email : info.email, 
-      paymentMethod : info.paymentMethod,
-    }
+  function addToMsg(str) {
+    outputMessage += '\n---\n' + str;
   }
 
-  function extractFromSheet() {
-    const sheet = GET_REGISTRATION_SHEET_();
-    info = sheet.getSheetValues(row, 1, 1, -1)[0];
+  function prettifyArr(arr){
+    const keys = Object.keys(COL_MAP);
 
-    const getInfo = (index) => info[index];
-
-    return {
-      fName : getInfo(COL_MAP.firstName), 
-      lName : getInfo(COL_MAP.lastName), 
-      email : getInfo(COL_MAP.email), 
-      paymentMethod : getInfo(COL_MAP.paymentMethod),
-    }
+    return keys.reduce((acc, label, i ) => { 
+      acc.push(`  (Col ${i}) ${label}: ${arr[i]}`);
+      return acc;
+    }, []).join('\n');
   }
-}
-
-
-function notifyPaymentStatus_(isPaid, fullName) {
-  if (isPaid) {
-    console.log(`Successfully found transaction email for ${fullName}!`);  // Log success message;
-  }
-  else {
-    // Notify McRUN of missing payment
-    notifyUnidentifiedPayment_(fullName);  
-    console.error(`Unable to find payment confirmation email for ${fullName}. Please verify again.`);
-  }
-}
-
-
-/**
- * Returns normalize str without accents.
- * 
- * @param {string} str  String to normalize.
- * @return {string}  Stripped str.
- * 
- * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date  Mar 5, 2025
- */
-
-function removeDiacritics(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
-
-
-/**
- * Returns a packaged obj to use as test.
- */
-
-function createTestObj_(row) {
-  const val = GET_REGISTRATION_SHEET_().getSheetValues(row, 1, 1, 19)[0];
-  const entries = Object.entries(COL_MAP);
-
-  const obj = entries.reduce((acc, [key, i]) => {
-    if (i < val.length) {
-      acc[key] = val[i];
-    }
-    return acc;
-  }, {});
-
-  console.log(obj);
-  return obj;
-}
-
-
-function test() {
-  //const contents = createTestObj_(8);
-  checkAndSetPayment_(9, null);
-  
-  //const {newRow : row, fullName : name} = appendNewRegistration_(contents);
 }

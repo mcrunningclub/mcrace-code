@@ -16,53 +16,6 @@ limitations under the License.
 
 
 /**
- * Formats certain columns of registration sheet.
- *
- * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date  Apr 21, 2025
- * @update  Apr 21, 2025
- */
-
-function formatSpecificColumns() {
-  const sheet = GET_REGISTRATION_SHEET_();
-
-  // Helper fuction to improve readability
-  const getThisRange = (ranges) =>
-    Array.isArray(ranges) ? sheet.getRangeList(ranges) : sheet.getRange(ranges);
-
-  // 1. Freeze panes
-  sheet.setFrozenRows(1);
-  sheet.setFrozenColumns(3);
-
-  // 2. Text wrapping
-  getThisRange('R2:R').setWrap(true);  // Comments
-
-  // 3. Vertical alignment
-  getThisRange([
-    'D:D',
-    'F:F',
-    'I:I',
-    'N:N',
-    'P:P',
-    'S:U',
-  ]).setHorizontalAlignment('center');
-
-  // 4. Set number formatting
-  const phoneFormat = "+0 (000) 000-0000";
-  getThisRange(['F2:F', 'I2:I']).setNumberFormat([phoneFormat]);  // Phone numbers
-
-  const dateFormat = "yyyy-mm-dd";
-  getThisRange(['N2:N', 'U2:U']).setNumberFormat([dateFormat]);
-
-  // 5. Update banding by increasing range
-  const cell = sheet.getRange(1,1);
-  const banding = cell.getBandings()[0];
-  banding.setRange(sheet.getDataRange());
-}
-
-
-
-/**
  * Creates custom menu to run frequently used scripts in Google App Script.
  *
  * Extracting function name using `name` property to allow for refactoring.
@@ -261,4 +214,3 @@ function verifyPaymentUI_() {
   const functionName = checkAndSetPayment_.name;
   confirmAndRunUserChoice_(functionName, fullMsg, selectedRow);
 }
-

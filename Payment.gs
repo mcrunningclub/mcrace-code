@@ -74,7 +74,7 @@ function setFeePaid_(row) {
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 21, 2025
- * @update Mar 21, 2025
+ * @update Apr 21, 2025
  * 
  */
 
@@ -84,7 +84,7 @@ function createSearchTerms_(member) {
 
   const searchTerms = [
     fullName,
-    removeDiacritics(fullName),
+    removeDiacritics_(fullName),
     member.email,
   ].filter(Boolean); // Removes undefined, null, or empty strings
 
@@ -270,29 +270,4 @@ function getMatchingPayments_(sender, maxMatches) {
   }
 
   return threads;
-}
-
-
-function notifyUnidentifiedPayment_(name) {
-  const emailBody =
-    `
-  Cannot find the payment notification for member: ${name}
-      
-  Please manually check the inbox and updated membership registry as required.
-
-  If email not found, please notify member of outstanding member fee.
-      
-  Automatic email created by 'McRace Code' bounded by ${SHEET_NAME} sheet.
-  `
-
-  const email = {
-    to: INTERNAL_EMAIL,
-    subject: 'ATTENTION: Missing Member Payment!',
-    body: emailBody,
-    options: {
-      cc: CLUB_EMAIL
-    }
-  };
-
-  GmailApp.sendEmail(email.to, email.subject, email.body, email.options);
 }
