@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// SHEET CONSTANTS
+/** SHEET CONSTANTS */
 const SHEET_NAME = 'Registrations';
 const SHEET_ID = 0;
 const REGISTRATION_SHEET = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
@@ -61,7 +61,6 @@ const COL_MAP = {
   paymentDate : 20,
   emailLog : 21,
 }
-
 
 
 /**

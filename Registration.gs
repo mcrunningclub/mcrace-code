@@ -14,6 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * Returns last valid row in `Registration`.
+ * 
+ * @return Last non-empty row.
+ */
+function getLastRowInReg_() {
+  return GET_REGISTRATION_SHEET_().getLastRow();
+}
+
+/**
+ * Functions to apply on new registrations.
+ *
+ * @param {object} this Input obj with following properties.
+ * @param {integer} this.row  New added row in `Registrations`.
+ * @param {object} this.member  Formatted member values added in `Registrations`.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
+ */
 
 function onNewRegistration_({ newRow : row, member : memberArr }) {
   const paymentInfo = extractPaymentInfo_(memberArr);
@@ -22,9 +42,6 @@ function onNewRegistration_({ newRow : row, member : memberArr }) {
   formatSpecificColumns();
 }
 
-function getLastRowInReg_() {
-  return GET_REGISTRATION_SHEET_().getLastRow();
-}
 
 function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
@@ -95,21 +112,6 @@ function checkAndSetPayment_(row = getLastRowInReg_(), info) {
     memberArr = sheet.getSheetValues(row, 1, 1, -1)[0];
     return extractPaymentInfo_(memberArr);
   }
-}
-
-
-/**
- * Returns normalize str without accents.
- * 
- * @param {string} str  String to normalize.
- * @return {string}  Stripped str.
- * 
- * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date  Mar 5, 2025
- */
-
-function removeDiacritics_(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 /**
  * Creates custom menu to run frequently used scripts in Google App Script.
  *
@@ -31,10 +30,17 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
 
   ui.createMenu('🏃‍♂️ McRace Menu')
-    .addItem('📢 Click for help', helpUI_.name)
+    .addItem('📢  Click for help...', helpUI_.name)
     .addSeparator()
-    .addItem('Prettify Sheet', prettifySheetUI_.name)
-    .addItem('Verify Payment', verifyPaymentUI_.name)
+
+    .addSubMenu(ui.createMenu('Import Menu')
+      .addItem('Process Import w/ Trigger', addImportTriggerUI_.name)
+    )
+
+    .addSubMenu(ui.createMenu('Registrations Menu')
+      .addItem('Prettify Sheet', prettifySheetUI_.name)
+      .addItem('Verify Payment', verifyPaymentUI_.name)
+    )
     .addToUi();
 }
 
@@ -194,7 +200,22 @@ function isValidRow_(row) {
 }
 
 
-/** ACTUAL MENU FUNCTIONS */
+/** IMPORT MENU FUNCTIONS */
+
+function addImportTriggerUI_() {
+  const result = requestRowInput_();  // {row : int, msg : string}
+  const selectedRow = result.row;
+
+  // Assemble notification message
+  const firstMsg = "↪️ Preparing to import row from 'Import'...";
+  const fullMsg = (result.msg ? `${result.msg}\n\n` : '') + firstMsg;
+
+  // Execute Function with row input
+  const functionName = addTriggerForNewRegistration_.name;
+  confirmAndRunUserChoice_(functionName, fullMsg, selectedRow);
+}
+
+/** REGISTRATIONS MENU FUNCTIONS */
 
 function prettifySheetUI_() {
   const functionName = formatSpecificColumns.name;
@@ -203,14 +224,14 @@ function prettifySheetUI_() {
 }
 
 function verifyPaymentUI_() {
-  const returnObj = requestRowInput_();  // returnObj = {row : int, msg : string}
-  const selectedRow = returnObj.row;
+  const result = requestRowInput_();  // {row : int, msg : string}
+  const selectedRow = result.row;
 
   // Assemble notification message
   const firstMsg = "↪️ Verifying payment status...";
-  const fullMsg = (returnObj.msg ? `${returnObj.msg}\n\n` : '') + firstMsg;
+  const fullMsg = (result.msg ? `${result.msg}\n\n` : '') + firstMsg;
 
-  // Execute Function with argument
+  // Execute Function with row input
   const functionName = checkAndSetPayment_.name;
   confirmAndRunUserChoice_(functionName, fullMsg, selectedRow);
 }

@@ -14,6 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * Returns normalize str without accents.
+ * 
+ * @param {string} str  String to normalize.
+ * @return {string}  Stripped str.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Mar 5, 2025
+ */
+
+function removeDiacritics_(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 
 /**
  * Formats certain columns of registration sheet.
@@ -57,8 +71,26 @@ function formatSpecificColumns() {
   const dateFormat = "yyyy-mm-dd";
   getThisRange(['N2:N', 'U2:U']).setNumberFormat([dateFormat]);
 
+  // 5. Add checkboxes to non-empty rows
+  addMissingCheckboxes_(sheet);
+
   // 5. Update banding by increasing range
   const cell = sheet.getRange(1,1);
   const banding = cell.getBandings()[0];
   banding.setRange(sheet.getDataRange());
+}
+
+
+/**
+ * Adds missing checkboxes to non-empty rows.
+ *
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 23, 2025
+ * @update  Apr 23, 2025
+ */
+
+function addMissingCheckboxes_(sheet = GET_REGISTRATION_SHEET_()) {
+  const lastRow = getLastRowInReg_();
+  const numRows = lastRow - 1;    // Remove header
+  sheet.getRange(2, COL_MAP.paymentConfirmed + 1, numRows).insertCheckboxes();
 }
