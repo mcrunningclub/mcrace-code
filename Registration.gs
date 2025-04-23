@@ -19,15 +19,12 @@ function onNewRegistration_({ newRow : row, member : memberArr }) {
   const paymentInfo = extractPaymentInfo_(memberArr);
   const isPaid = checkAndSetPayment_(row, paymentInfo);
   notifyPaymentStatus_(isPaid, paymentInfo.fullName);
-
   formatSpecificColumns();
 }
-
 
 function getLastRowInReg_() {
   return GET_REGISTRATION_SHEET_().getLastRow();
 }
-
 
 function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
@@ -100,40 +97,6 @@ function checkAndSetPayment_(row = getLastRowInReg_(), info) {
   }
 }
 
-function notifyPaymentStatus_(isPaid, fullName) {
-  if (isPaid) {
-    console.log(`Successfully found transaction email for ${fullName}!`);  // Log success message;
-  }
-  else {
-    // Notify McRUN of missing payment
-    notifyUnidentifiedPayment(fullName);  
-    console.error(`Unable to find payment confirmation email for ${fullName}. Please verify again.`);
-  }
-
-  function notifyUnidentifiedPayment(name) {
-    const emailBody =
-      `
-    Cannot find the payment notification for member: ${name}
-        
-    Please manually check the inbox and updated membership registry as required.
-
-    If email not found, please notify member of outstanding member fee.
-        
-    Automatic email created by 'McRace Code' bounded by ${SHEET_NAME} sheet.
-    `
-    const email = {
-      to: INTERNAL_EMAIL,
-      subject: 'ATTENTION: Missing Member Payment!',
-      body: emailBody,
-      options: {
-        cc: CLUB_EMAIL
-      }
-    };
-
-    GmailApp.sendEmail(email.to, email.subject, email.body, email.options);
-  }
-}
-
 
 /**
  * Returns normalize str without accents.
@@ -171,7 +134,10 @@ function createTestObj_(row) {
 
 
 function test() {
-  const dataStr = GET_IMPORT_SHEET_().getSheetValues(1, 1, 1, -1)[0];  //createTestObj_(8);
-  const ret = addNewRegistration_(JSON.parse(dataStr));
+  addTriggerForNewRegistration_(4);
+  //processLastImport();
+  
+  //const dataStr = GET_IMPORT_SHEET_().getSheetValues(1, 1, 1, -1)[0];  //createTestObj_(8);
+  //const ret = addNewRegistration_(JSON.parse(dataStr));
   //onNewRegistration_(reg);
 }

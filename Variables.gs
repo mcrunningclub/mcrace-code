@@ -32,7 +32,6 @@ const GET_IMPORT_SHEET_ = () => {
   return (IMPORT_SHEET) ?? SpreadsheetApp.getActiveSpreadsheet().getSheetById(IMPORT_SHEET_ID);
 }
 
-
 const TIMEZONE = getUserTimeZone_();
 
 /** KEYS MUST MATCH POST DATA FROM FILLOUT WITH SHEET COL */
@@ -64,6 +63,7 @@ const COL_MAP = {
 }
 
 
+
 /**
  * Returns timezone for currently running script.
  *
@@ -88,3 +88,39 @@ function getUserTimeZone_() {
 function getCurrentUserEmail_() {
   return Session.getActiveUser().toString();
 }
+
+
+/** STORE FUNCTIONS */
+
+function emptyStore(store = IMPORT_STORE) {
+  const props =  PropertiesService.getScriptProperties();
+  props.setProperty(store.name, '');
+}
+
+function pushStore_(value, store) {
+  const props = PropertiesService.getScriptProperties();
+  const queue = getStoreQueue_(store, props);
+  
+  // Update and store queue
+  queue.push(value);
+  setStoreQueue_(queue, store, props);
+}
+
+function popStore_(store) {
+  const props = PropertiesService.getScriptProperties();
+  const queue = getStoreQueue_(store, props);
+  
+  const popped = queue.shift();  // Returns undefined if empty
+  setStoreQueue_(queue, store, props);
+  return popped;
+}
+
+function getStoreQueue_(store, props) {
+  const values = props.getProperty(store.name);
+  return (values) ? values.split(store.delimeter) : [];
+}
+
+function setStoreQueue_(queue, store, props) {
+  props.setProperty(store.name, queue.join(store.delimeter));
+}
+
