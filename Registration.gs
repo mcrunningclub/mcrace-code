@@ -136,7 +136,20 @@ function createTestObj_(row) {
 
 
 function test() {
-  addTriggerForNewRegistration_(4);
+  //addTriggerForNewRegistration_(4);
+  createPostTemplate()
+
+  function createPostTemplate() {
+    const keys = Object.keys(COL_MAP);
+    const str = keys.reduce((acc, key) => {
+      acc += `"${key}" : "",\n`;
+      return acc;
+    }, "");
+
+    console.log(str);
+  }
+
+
   //processLastImport();
   
   //const dataStr = GET_IMPORT_SHEET_().getSheetValues(1, 1, 1, -1)[0];  //createTestObj_(8);

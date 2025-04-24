@@ -34,6 +34,7 @@ function appendToImport(reg) {
   return importSheet.getLastRow();
 }
 
+
 function processLastImport() {
   const sheet = GET_IMPORT_SHEET_();
   const targetRow = getNextRowInQueue_();
@@ -83,6 +84,49 @@ function doPost(e) {
   }
 }
 
+
+function onChange(e) {
+   // Get details of edit event's sheet
+  console.log({
+    authMode: e.authMode.toString(),
+    changeType: e.changeType,
+    user: e.user,
+  });
+
+  const thisSource = e.source;
+
+  // Try-catch to prevent errors when sheetId cannot be found
+  try {
+    const thisSheetId = thisSource.getSheetId();
+    const thisLastRow = thisSource.getLastRow();
+
+    const thisChange = e.changeType;
+    console.log(`Change Type: ${thisChange}`);
+
+    if (thisSheetId === IMPORT_SHEET_ID && thisChange === 'INSERT_ROW') {
+      console.log('Executing if block from onChange(e)...');
+      
+      // STEP 1 : Get new registration object
+      const importSheet = thisSource.getSheetById(thisSheetId);
+      const rawData = importSheet.getRange(thisLastRow, 1).getValue();
+      console.log(`Received following data:\n${rawData}`);
+      
+      const registrationObj = JSON.parse(rawData);
+      
+      // STEP 2 : Add processed post data in Registration
+      const processed = addNewRegistration_(registrationObj);
+      console.log(`Completed ${addNewRegistration_.name} successfully!`);
+      
+      // STEP 3 : Process new registration
+      onNewRegistration_(processed);
+      console.log(`Completed ${onNewRegistration_.name} successfully!`);
+    }
+  }
+  catch (error) {
+    console.log('Whoops! Error raised in onChange(e)');
+    Logger.log(error);
+  }
+}
 
 function addTriggerForNewRegistration_(targetRow) {
   const lock = LockService.getScriptLock();
