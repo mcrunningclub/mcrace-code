@@ -54,37 +54,6 @@ function processLastImport() {
 }
 
 
-function doPost(e) {
-  const data = e.postData.contents;
-  
-  // Preparing return message
-  let outputMessage = 'Starting doPost...';
-  const addToMsg = (str) => outputMessage += '\n---\n' + str;
-
-  try {
-    // STEP 1 : Add to import sheet as backup
-    const newRow = appendToImport(data);
-    addToMsg(`Appended following post contents in Import (row ${newRow}): ${data}`);
-
-    // STEP 2 : Set trigger to process new registration (doPost cannot log messages or access McRUN inbox)
-    // This includes: payment verification, sheet formatting, etc.
-    addTriggerForNewRegistration_(newRow);
-    addToMsg('New trigger added');
-
-    // STEP 3 : Log current user for debugging purposes
-    const user = getCurrentUserEmail_();
-    addToMsg(`Current user: ${user}`);
-    addToMsg(`Completed 'onNewRegistration' successfully!`);
-  }
-  catch (error) {
-    addToMsg(`Error! Could not complete doPost\n${error.message}`);
-  }
-  finally {
-    return ContentService.createTextOutput(outputMessage);
-  }
-}
-
-
 function onChange(e) {
    // Get details of edit event's sheet
   console.log({
