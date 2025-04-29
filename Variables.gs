@@ -88,38 +88,3 @@ function getCurrentUserEmail_() {
   return Session.getActiveUser().toString();
 }
 
-
-/** STORE FUNCTIONS */
-
-function emptyStore(store = IMPORT_STORE) {
-  const props =  PropertiesService.getScriptProperties();
-  props.setProperty(store.name, '');
-}
-
-function pushStore_(value, store) {
-  const props = PropertiesService.getScriptProperties();
-  const queue = getStoreQueue_(store, props);
-  
-  // Update and store queue
-  queue.push(value);
-  setStoreQueue_(queue, store, props);
-}
-
-function popStore_(store) {
-  const props = PropertiesService.getScriptProperties();
-  const queue = getStoreQueue_(store, props);
-  
-  const popped = queue.shift();  // Returns undefined if empty
-  setStoreQueue_(queue, store, props);
-  return popped;
-}
-
-function getStoreQueue_(store, props) {
-  const values = props.getProperty(store.name);
-  return (values) ? values.split(store.delimeter) : [];
-}
-
-function setStoreQueue_(queue, store, props) {
-  props.setProperty(store.name, queue.join(store.delimeter));
-}
-

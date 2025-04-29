@@ -76,7 +76,7 @@ function matchMemberInPaymentEmail_(searchTerms, emailBody) {
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 16, 2025
- * @update  Mar 16, 2025
+ * @update  Apr 29, 2025
  */
 
 function getMatchingPayments_(sender, maxMatches) {
@@ -94,7 +94,7 @@ function getMatchingPayments_(sender, maxMatches) {
   for (let tries = 0; tries < 3 && threads.length === 0; tries++) {
     if (tries > 0) Utilities.sleep(delay);  // Wait only on retries
     threads = GmailApp.search(searchStr, 0, maxMatches);
-    delay *= 2; // Exponential backoff (10s → 20s → 40s)
+    delay *= 3; // Exponential backoff (10s → 30s → 90s)
   }
 
   return threads;

@@ -37,7 +37,7 @@ function getLastRowInReg_() {
 
 function onNewRegistration_({ newRow : row, member : memberArr }) {
   const paymentInfo = extractPaymentInfo_(memberArr);
-  const isPaid = checkAndSetPayment_(row, paymentInfo);
+  const isPaid = checkAndSetPayment(row, paymentInfo);
   notifyPaymentStatus_(isPaid, paymentInfo.fullName);
   formatSpecificColumns();
 }
@@ -95,7 +95,7 @@ function extractPaymentInfo_(memberArr) {
 }
 
 
-function checkAndSetPayment_(row = getLastRowInReg_(), info) {
+function checkAndSetPayment(row = getLastRowInReg_(), info) {
   // Get values from info or from sheet, and concatenate full name
   info = info ?? extractFromSheet();
   
@@ -149,10 +149,7 @@ function test() {
     console.log(str);
   }
 
-
-  //processLastImport();
   
   //const dataStr = GET_IMPORT_SHEET_().getSheetValues(1, 1, 1, -1)[0];  //createTestObj_(8);
   //const ret = addNewRegistration_(JSON.parse(dataStr));
-  //onNewRegistration_(reg);
 }

@@ -232,6 +232,6 @@ function verifyPaymentUI_() {
   const fullMsg = (result.msg ? `${result.msg}\n\n` : '') + firstMsg;
 
   // Execute Function with row input
-  const functionName = checkAndSetPayment_.name;
+  const functionName = checkAndSetPayment.name;
   confirmAndRunUserChoice_(functionName, fullMsg, selectedRow);
 }
