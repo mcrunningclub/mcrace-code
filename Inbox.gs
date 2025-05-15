@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 /** LABELS FOR GMAIL ACCOUNT */
-const ZEFFY_LABEL = 'Fee Payments/Zeffy Emails';
+const ONLINE_LABEL = 'Fee Payments/Online';
 const INTERAC_LABEL = 'Fee Payments/Interac Emails';
 
 
@@ -102,13 +102,13 @@ function getMatchingPayments_(sender, maxMatches) {
 
 
 
-/** 2️⃣ 👉 FUNCTION HANDLING ZEFFY TRANSACTIONS 👈  *\
+/** 2️⃣ 👉 FUNCTION HANDLING STRIPE OR ZEFFY TRANSACTIONS 👈  *\
 
 /**
  * Process a single Gmail thread to find a matching member's payment.
  */
 
-function processZeffyThread_(thread, searchTerms) {
+function processOnlineThread_(thread, searchTerms) {
   const messages = thread.getMessages();
   let starredCount = 0;
   let isFoundInMessage = false;
@@ -129,7 +129,7 @@ function processZeffyThread_(thread, searchTerms) {
   }
 
   if (starredCount === messages.length) {
-    const zeffyLabel = getGmailLabel_(ZEFFY_LABEL);
+    const zeffyLabel = getGmailLabel_(ONLINE_LABEL);
     cleanUpMatchedThread_(thread, zeffyLabel);
   }
 
@@ -160,7 +160,7 @@ function processInteracThreads_(thread, searchTerms) {
 }
 
 
-/** EMAIL NOTIFICATIONS */
+/** EMAIL NOTIFICATION */
 
 function notifyPaymentStatus_(isPaid, fullName) {
   if (isPaid) {
@@ -173,20 +173,20 @@ function notifyPaymentStatus_(isPaid, fullName) {
   }
 
   function notifyUnidentifiedPayment(name) {
-    const emailBody =
-      `
-    Cannot find the payment notification for member: ${name}
+    const emailBody = 
+    `
+    Cannot find the Interac or Stripe payment confirmation email for member: ${name}
         
     Please manually check the inbox and update registration as required.
 
     If email not found, please notify member of outstanding member fee.
         
-    Automatic email created by 'McRace Code' in '${SHEET_NAME}' sheet.
+    Automatic email created by '${SHEET_NAME}' script.
     `
     const email = {
       to: INTERNAL_EMAIL,
       subject: 'ATTENTION: Missing Member Payment for McRace 2025!',
-      body: emailBody,
+      body: emailBody.replace(/[ \t]{2,}/g, ''),
       options: {
         cc: CLUB_EMAIL
       }

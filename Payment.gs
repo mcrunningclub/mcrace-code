@@ -20,12 +20,13 @@ const INTERNAL_EMAIL = 'mcrunningclubinternal@ssmu.ca';
 /** SENDER INFORMATION */
 const ZEFFY_EMAIL = 'contact@zeffy.com';
 const INTERAC_EMAIL = 'interac.ca';    // Interac email addresses end in "interac.ca"
+const STRIPE_EMAIL = 'stripe.com';
 
 
 // Helper function for Interac and Zeffy cases
 function checkPayment_({ fName, lName, email, paymentMethod }) {
   if (paymentMethod.includes('CC')) {
-    return checkZeffyPayment_({ firstName: fName, lastName: lName, email: email });
+    return checkOnlinePayment_({ firstName: fName, lastName: lName, email: email });
   }
   else if (paymentMethod.includes('Interac')) {
     return checkInteracPayment_({ firstName: fName, lastName: lName });
@@ -35,8 +36,8 @@ function checkPayment_({ fName, lName, email, paymentMethod }) {
 }
 
 
-function checkZeffyPayment_(member) {
-  const sender = ZEFFY_EMAIL;
+function checkOnlinePayment_(member) {
+  const sender = `${ZEFFY_EMAIL} OR ${STRIPE_EMAIL}`;
   const maxMatches = 3;
   const threads = getMatchingPayments_(sender, maxMatches);
 
@@ -44,7 +45,7 @@ function checkZeffyPayment_(member) {
   const searchTerms = createSearchTerms_(member);
 
   // Return true if email matching member found
-  return threads.some(thread => processZeffyThread_(thread, searchTerms));
+  return threads.some(thread => processOnlineThread_(thread, searchTerms));
 }
 
 
@@ -109,8 +110,7 @@ function setFeePaid_(row) {
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 21, 2025
- * @update Apr 21, 2025
- * 
+ * @update  Apr 21, 2025
  */
 
 function createSearchTerms_(member) {

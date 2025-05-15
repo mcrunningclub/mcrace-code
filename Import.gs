@@ -21,7 +21,6 @@ function appendToImport(reg) {
   return importSheet.getLastRow();
 }
 
-
 function processLastImport() {
   const sheet = GET_IMPORT_SHEET_();
   const targetRow = getNextRowInQueue_();

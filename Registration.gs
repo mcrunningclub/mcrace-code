@@ -137,7 +137,7 @@ function createTestObj_(row) {
 
 function test() {
   //addTriggerForNewRegistration_(4);
-  createPostTemplate()
+  //createPostTemplate();
 
   function createPostTemplate() {
     const keys = Object.keys(COL_MAP);
@@ -148,6 +148,19 @@ function test() {
 
     console.log(str);
   }
+
+  const emailBody =
+  `
+  Cannot find the payment notification for member: Bob Burger
+  
+  Please manually check the inbox and update registration as required.
+
+  If email not found, please notify member of outstanding member fee.
+        
+  Automatic email created by 'McRace Code' in '${SHEET_NAME}' sheet.
+  `
+
+  console.log(emailBody.replace(/[ \t]{2,}/g, ''));
 
   
   //const dataStr = GET_IMPORT_SHEET_().getSheetValues(1, 1, 1, -1)[0];  //createTestObj_(8);
