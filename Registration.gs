@@ -37,8 +37,7 @@ function getLastRowInReg_() {
 
 function onNewRegistration_({ newRow : row, member : memberArr }) {
   const paymentInfo = extractPaymentInfo_(memberArr);
-  const isPaid = checkAndSetPayment(row, paymentInfo);
-  notifyPaymentStatus_(isPaid, paymentInfo.fullName);
+  checkAndSetPayment(row, paymentInfo);
   formatSpecificColumns();
 }
 
@@ -95,16 +94,24 @@ function extractPaymentInfo_(memberArr) {
 }
 
 
-function checkAndSetPayment(row = getLastRowInReg_(), info) {
+function checkAndSetPayment(row = getLastRowInReg_(), feeDetails) {
   // Get values from info or from sheet, and concatenate full name
-  info = info ?? extractFromSheet();
+  feeDetails = feeDetails ?? extractFromSheet();
   
   // Find member transaction using packaged info (name, payment method, ...)
-  isPaid = checkPayment_(info);
-  if (isPaid) { setFeePaid_(row) };
+  const isFound = checkPayment_(feeDetails);
+  if (isFound) { 
+    setFeePaid_(row);
+    console.log(`Successfully found transaction email for ${feeDetails.fullName}!`);  // Log success message;
+  }
+  else {
+    // 1) Create a scheduled trigger to recheck email inbox
+    // 2) After max tries, send an email notification to McRUN for missing payment
+    console.error(`Unable to find payment confirmation for '${feeDetails.fullName}'. Creating new scheduled trigger to check later.`);
+    createNewFeeTrigger_(row, feeDetails);
+  }
 
-  // Return true if member paid
-  return isPaid;
+  return isFound;
 
   /** Helper Function */
   function extractFromSheet() {

@@ -162,37 +162,26 @@ function processInteracThreads_(thread, searchTerms) {
 
 /** EMAIL NOTIFICATION */
 
-function notifyPaymentStatus_(isPaid, fullName) {
-  if (isPaid) {
-    console.log(`Successfully found transaction email for ${fullName}!`);  // Log success message;
-  }
-  else {
-    // Notify McRUN of missing payment
-    notifyUnidentifiedPayment(fullName);  
-    console.error(`Unable to find payment confirmation email for ${fullName}. Please verify again.`);
-  }
+function notifyUnidentifiedPayment_(fullName) {
+  const emailBody = 
+  `
+  Cannot find the payment confirmation email for ${fullName}.
+      
+  Please manually check the inbox and update registration as required.
 
-  function notifyUnidentifiedPayment(name) {
-    const emailBody = 
-    `
-    Cannot find the Interac or Stripe payment confirmation email for member: ${name}
-        
-    Please manually check the inbox and update registration as required.
+  If email not found, please notify member of outstanding member fee.
+      
+  Automatic email created by 'McRace Code' in Google Apps Script.
+  `
+  const email = {
+    to: INTERNAL_EMAIL,
+    subject: 'ATTENTION: Missing Member Payment for McRace 2025!',
+    body: emailBody.replace(/[ \t]{2,}/g, ''),
+    options: {
+      cc: CLUB_EMAIL
+    }
+  };
 
-    If email not found, please notify member of outstanding member fee.
-        
-    Automatic email created by '${SHEET_NAME}' script.
-    `
-    const email = {
-      to: INTERNAL_EMAIL,
-      subject: 'ATTENTION: Missing Member Payment for McRace 2025!',
-      body: emailBody.replace(/[ \t]{2,}/g, ''),
-      options: {
-        cc: CLUB_EMAIL
-      }
-    };
-
-    GmailApp.sendEmail(email.to, email.subject, email.body, email.options);
-  }
+  GmailApp.sendEmail(email.to, email.subject, email.body, email.options);
 }
 
