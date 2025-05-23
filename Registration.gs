@@ -15,24 +15,31 @@ limitations under the License.
 */
 
 /**
- * Returns last valid row in `Registration`.
+ * Returns the last valid row in the `Registration` sheet.
  * 
- * @return Last non-empty row.
+ * @return {integer}  The last non-empty row in the `Registration` sheet.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date Apr 21, 2025
+ * @update Apr 23, 2025
  */
+
 function getLastRowInReg_() {
   return GET_REGISTRATION_SHEET_().getLastRow();
 }
 
+
 /**
- * Functions to apply on new registrations.
- *
- * @param {object} this Input obj with following properties.
- * @param {integer} this.row  New added row in `Registrations`.
- * @param {object} this.member  Formatted member values added in `Registrations`.
+ * Processes a new registration by extracting payment information, verifying payment, 
+ * and formatting the registration sheet.
+ * 
+ * @param {Object} this  Input object with the following properties.
+ * @param {integer} this.newRow  The new row added in the `Registration` sheet.
+ * @param {Object[]} this.member  The formatted member values added in the `Registration` sheet.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date  Apr 21, 2025
- * @update  Apr 23, 2025
+ * @date Apr 21, 2025
+ * @update Apr 23, 2025
  */
 
 function onNewRegistration_({ newRow : row, member : memberArr }) {
@@ -41,6 +48,19 @@ function onNewRegistration_({ newRow : row, member : memberArr }) {
   formatSpecificColumns();
 }
 
+
+/**
+ * Adds a new registration to the `Registration` sheet.
+ * 
+ * Formats the registration data and appends it to the sheet. Returns the new row and formatted member data.
+ * 
+ * @param {Object} registrationObj  The registration data to add.
+ * @returns {Object}  An object containing the new row and formatted member data.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date Apr 21, 2025
+ * @update Apr 23, 2025
+ */
 
 function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
@@ -76,7 +96,18 @@ function addNewRegistration_(registrationObj) {
   }
 }
 
-/** Helper Function */
+
+/**
+ * Extracts payment information from a member array.
+ * 
+ * @param {Object[]} memberArr  The array of member data.
+ * @returns {Member}  A Member object containing the payment information.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date Apr 21, 2025
+ * @update Apr 23, 2025
+ */
+
 function extractPaymentInfo_(memberArr) {
   const getValue = (index) => memberArr[index];
 
@@ -94,10 +125,24 @@ function extractPaymentInfo_(memberArr) {
 }
 
 
-function checkAndSetPayment(row = getLastRowInReg_(), feeDetails) {
-  // Get values from info or from sheet, and concatenate full name
-  feeDetails = feeDetails ?? extractFromSheet();
-  
+/**
+ * Verifies and sets the payment status for a member in the `Registration` sheet.
+ * 
+ * If the payment is found, marks the payment as confirmed and sets the payment date.
+ * If not found, schedules a trigger to recheck the inbox and sends a notification if necessary.
+ * 
+ * @param {integer} [row=getLastRowInReg_()]  The row to update in the `Registration` sheet.
+ * @param {Object} [feeDetails=extractFromSheet()]  The member's payment details.
+ * @returns {boolean}  True if the payment is found, otherwise false.
+ * 
+ * @throws {Error}  If payment verification fails after multiple attempts.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
+ */
+
+function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet()) {
   // Find member transaction using packaged info (name, payment method, ...)
   const isFound = checkPayment_(feeDetails);
   if (isFound) { 
@@ -155,21 +200,4 @@ function test() {
 
     console.log(str);
   }
-
-  const emailBody =
-  `
-  Cannot find the payment notification for member: Bob Burger
-  
-  Please manually check the inbox and update registration as required.
-
-  If email not found, please notify member of outstanding member fee.
-        
-  Automatic email created by 'McRace Code' in '${SHEET_NAME}' sheet.
-  `
-
-  console.log(emailBody.replace(/[ \t]{2,}/g, ''));
-
-  
-  //const dataStr = GET_IMPORT_SHEET_().getSheetValues(1, 1, 1, -1)[0];  //createTestObj_(8);
-  //const ret = addNewRegistration_(JSON.parse(dataStr));
 }

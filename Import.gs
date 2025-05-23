@@ -15,11 +15,33 @@ limitations under the License.
 */
 
 
+/**
+ * Appends a registration object to the import sheet.
+ * 
+ * @param {string} reg  The registration data in string format.
+ * @returns {integer}  The row number where the registration was appended.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
+ */
+
 function appendToImport(reg) {
   const importSheet = GET_IMPORT_SHEET_();
   importSheet.appendRow([reg]);
   return importSheet.getLastRow();
 }
+
+
+/**
+ * Processes the last imported registration from the import sheet.
+ * 
+ * @throws {Error} If the target row is invalid or missing.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 23, 2025
+ * @update  Apr 23, 2025
+ */
 
 function processLastImport() {
   const sheet = GET_IMPORT_SHEET_();
@@ -39,6 +61,17 @@ function processLastImport() {
   console.log(`Completed 'processLastImport' successfully!`);
 }
 
+
+/**
+ * Triggered when a change occurs in the spreadsheet.
+ * 
+ * @param {GoogleAppsScript.Events.SheetsOnChange} e  The event object containing details of the change.
+ * @throws {Error} If the target row is invalid or missing.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 24, 2025
+ * @update  Apr 24, 2025
+ */
 
 function onChange(e) {
    // Get details of edit event's sheet
@@ -85,8 +118,17 @@ function onChange(e) {
 
 
 /**
- * @deprecated  Use Zapier automation and `onChange` instead. (2025-04-29)
+ * Handles HTTP POST requests to process new registrations.
+ * 
+ * @deprecated Use Zapier automation and `onChange` instead. (2025-04-29)
+ * @param {GoogleAppsScript.Events.DoPost} e - The event object containing POST data.
+ * @returns {GoogleAppsScript.Content.TextOutput} A text output with the result of the operation.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 29, 2025
  */
+
 function doPost(e) {
   const data = e.postData.contents;
   

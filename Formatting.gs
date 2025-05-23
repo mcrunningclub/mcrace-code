@@ -14,14 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 /**
- * Returns normalize str without accents.
+ * Removes diacritics (accents) from a given string.
  * 
- * @param {string} str  String to normalize.
- * @return {string}  Stripped str.
+ * @param {string} str  The string to normalize and strip of diacritics.
+ * @return {string}  The normalized string without diacritics.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 5, 2025
+ * @update  Apr 23, 2025
  */
 
 function removeDiacritics_(str) {
@@ -30,8 +32,14 @@ function removeDiacritics_(str) {
 
 
 /**
- * Formats certain columns of registration sheet.
- *
+ * Formats the registration sheet by:
+ * 1. Freezing panes
+ * 2. Setting text wrapping
+ * 3. Setting vertical alignment
+ * 4. Setting number formatting
+ * 5. Adding checkboxes to non-empty rows
+ * 6. Updating banding by increasing range
+ * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
  * @update  Apr 23, 2025
@@ -74,7 +82,7 @@ function formatSpecificColumns() {
   // 5. Add checkboxes to non-empty rows
   addMissingCheckboxes_(sheet);
 
-  // 5. Update banding by increasing range
+  // 6. Update banding by increasing range
   const cell = sheet.getRange(1,1);
   const banding = cell.getBandings()[0];
   banding.setRange(sheet.getDataRange());
@@ -82,8 +90,10 @@ function formatSpecificColumns() {
 
 
 /**
- * Adds missing checkboxes to non-empty rows.
- *
+ * Adds checkboxes to the `paymentConfirmed` column for all non-empty rows.
+ * 
+ * @param {SpreadsheetApp.Sheet} [sheet=GET_REGISTRATION_SHEET_()]  The sheet to add checkboxes to.
+ *                                                                  Defaults to the registration sheet.
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 23, 2025
  * @update  Apr 23, 2025
@@ -94,3 +104,4 @@ function addMissingCheckboxes_(sheet = GET_REGISTRATION_SHEET_()) {
   const numRows = lastRow - 1;    // Remove header
   sheet.getRange(2, COL_MAP.paymentConfirmed + 1, numRows).insertCheckboxes();
 }
+

@@ -22,8 +22,28 @@ const ZEFFY_EMAIL = 'contact@zeffy.com';
 const INTERAC_EMAIL = 'interac.ca';    // Interac email addresses end in "interac.ca"
 const STRIPE_EMAIL = 'stripe.com';
 
+/**
+ * @typedef {Object} Member
+ * @property {string} firstName - The member's first name.
+ * @property {string} lastName - The member's last name.
+ * @property {string} email - The member's email address.
+ * @property {string} paymentMethod - The payment method used by the member.
+ */
 
-// Helper function for Interac and Zeffy cases
+
+/**
+ * Checks the payment status for a member based on their payment method.
+ * 
+ * If the payment method includes "CC", it checks online payments (e.g., Zeffy or Stripe).
+ * If the payment method includes "Interac", it checks Interac payments.
+ * 
+ * @param {Member} member  The member's information.
+ * @returns {boolean}  True if the payment is found, otherwise false.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Oct 1, 2023
+ * @update  Apr 23, 2025
+ */
 function checkPayment_({ fName, lName, email, paymentMethod }) {
   if (paymentMethod.includes('CC')) {
     return checkOnlinePayment_({ firstName: fName, lastName: lName, email: email });
@@ -36,6 +56,18 @@ function checkPayment_({ fName, lName, email, paymentMethod }) {
 }
 
 
+/**
+ * Checks for online payments (e.g., Zeffy or Stripe) for a member.
+ * 
+ * Searches for matching payment emails using the member's information.
+ * 
+ * @param {Member} member  The member's information.
+ * @returns {boolean}  True if a matching payment email is found, otherwise false.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Oct 1, 2023
+ * @update  Apr 23, 2025
+ */
 function checkOnlinePayment_(member) {
   const sender = `${ZEFFY_EMAIL} OR ${STRIPE_EMAIL}`;
   const maxMatches = 3;
@@ -50,11 +82,15 @@ function checkOnlinePayment_(member) {
 
 
 /**
- * Look for new emails from Interac starting yesterday (cannot search from same day) and extract ref number.
+ * Checks for online payments (e.g., Zeffy or Stripe) for a member.
+ * 
+ * Searches for matching payment emails using the member's information.
+ * 
+ * @param {Member} member  The member's information.
+ * @returns {boolean}  True if a matching payment email is found, otherwise false.
  * 
  * @trigger  New member registration.
- * @error  Send notification email to McRUN if no ref number found.
- *  
+ * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Oct 1, 2023
  * @update  Apr 23, 2025
@@ -75,11 +111,12 @@ function checkInteracPayment_(member) {
 
 
 /**
- * Updates member's fee information.
+ * Updates a member's fee information in the registration sheet.
  * 
- * @param {number} Row index to enter information.
- * @param {string} listItem  The list item in `Internal Fee Collection` to set in 'Collection Person' col.
- *  
+ * Marks the payment as confirmed and sets the payment date to the current date.
+ * 
+ * @param {integer} row  The row index to update in the registration sheet.
+ * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Oct 1, 2023
  * @update  Apr 21, 2025
@@ -99,14 +136,12 @@ function setFeePaid_(row) {
 
 
 /**
- * Creates search terms for regex using member information.
+ * Creates search terms for regex matching using a member's information.
  * 
- * Matches lastName whether hyphenated or not.
+ * Handles hyphenated last names and removes diacritics for better matching.
  * 
- * @param {Object}  Member information.
- * @param {string} member.firstName  Member's first name.
- * @param {string} member.lastName  Member's last name.
- * @param {string} [member.email]  Member's email address (if applicable).
+ * @param {Member} member  The member's information.
+ * @returns {string[]}  An array of search terms for regex matching.
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 21, 2025
@@ -126,3 +161,43 @@ function createSearchTerms_(member) {
   return searchTerms;
 }
 
+
+// /**
+//  * Represents a member with their payment and contact information.
+//  */
+// class Member {
+//   /**
+//    * Creates a new Member instance.
+//    * 
+//    * @param {string} firstName - The member's first name.
+//    * @param {string} lastName - The member's last name.
+//    * @param {string} email - The member's email address.
+//    * @param {string} paymentMethod - The payment method used by the member.
+//    */
+//   constructor(firstName, lastName, email, paymentMethod) {
+//     this.firstName = firstName;
+//     this.lastName = lastName;
+//     this.email = email;
+//     this.paymentMethod = paymentMethod;
+//   }
+
+//   /**
+//    * Generates search terms for regex matching using the member's information.
+//    * 
+//    * @returns {string[]} An array of search terms for regex matching.
+//    */
+//   createSearchTerms() {
+//     const lastNameHyphenated = this.lastName.replace(/[-\s]/, '[-\\s]?'); // Handle hyphenated last names
+//     const fullName = `${this.firstName}\\s+${lastNameHyphenated}`;
+
+//     return [
+//       fullName,
+//       removeDiacritics_(fullName),
+//       this.email,
+//     ].filter(Boolean); // Removes undefined, null, or empty strings
+//   }
+// }
+
+// const member = new Member('John', 'Doe', 'john.doe@example.com', 'CC');
+// const searchTerms = member.createSearchTerms();
+// console.log(searchTerms);

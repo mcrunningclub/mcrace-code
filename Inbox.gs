@@ -21,19 +21,47 @@ const INTERAC_LABEL = 'Fee Payments/Interac Emails';
 
 /** 1️⃣ HELPER FUNCTIONS FOR ZEFFY AND INTERAC */
 
+/**
+ * Retrieves a Gmail label by its name.
+ * 
+ * @param {string} labelName  The name of the Gmail label to retrieve.
+ * @returns {Gmail.GmailLabel}  The Gmail label object.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
+ */
 function getGmailLabel_(labelName) {
   return GmailApp.getUserLabelByName(labelName);
 }
 
-// Get threads from search (from:sender, starting:minDate, in:inbox)
+
+/**
+ * Constructs a Gmail search string to find threads from a specific sender after a given date.
+ * 
+ * @param {string} sender  The email address of the sender.
+ * @param {integer} offset  The time offset in milliseconds to calculate the minimum date.
+ * @returns {string}  The Gmail search string.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date Apr 21, 2025  (Apr 23, 2025)
+ */
 function getGmailSearchString_(sender, offset) {
   const minDate = new Date(Date.now() - offset);
   const formattedDate = Utilities.formatDate(minDate, TIMEZONE, 'yyyy/MM/dd');
-  return `from:(${sender}) in:inbox after:${formattedDate}`;
+  return `from:(${sender}) in:inbox after:${formattedDate}`;  // Search string `(from:sender, starting:minDate, in:inbox)`
 }
 
+
 /**
- * Marks a fully processed thread as read, archives it, and moves it to the `label` folder.
+ * Marks a Gmail thread as read, archives it, and moves it to a specified label.
+ * 
+ * @param {Gmail.GmailThread} thread  The Gmail thread to process.
+ * @param {Gmail.GmailLabel} label  The Gmail label to apply to the thread.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
  */
 
 function cleanUpMatchedThread_(thread, label) {
@@ -48,13 +76,13 @@ function cleanUpMatchedThread_(thread, label) {
 /**
  * Checks if a member's information is present in the email body.
  * 
- * @param {string[]}  searchTerms. Search terms for match regex.
+ * @param {string[]} searchTerms  Search terms for match regex.
  * @param {string} emailBody  The body of the payment.
+ * @returns {boolean}  True if a match is found, false otherwise.
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 15, 2025
- * @update Apr 21, 2025
- * 
+ * @update  Apr 21, 2025
  */
 
 function matchMemberInPaymentEmail_(searchTerms, emailBody) {
@@ -67,12 +95,15 @@ function matchMemberInPaymentEmail_(searchTerms, emailBody) {
 
 
 /**
- * Return latest emails of payment notification.
+ * Retrieves the latest payment notification emails from a specific sender.
  * 
- * If not found, wait multiple times for email to arrive in McRUN inbox.
+ * If no emails are found, retries multiple times with exponential backoff.
  * 
- * @param {string} sender  Email of sender (Interac or Zeffy).
- * @param {number} maxMatches  Number of max tries.
+ * @param {string} sender  The email address of the sender (e.g., Interac or Zeffy).
+ * @param {integer} maxMatches  The maximum number of threads to retrieve.
+ * @returns {Gmail.GmailThread[]}  An array of Gmail threads matching the search criteria.
+ * 
+ * @throws {Error} If the current user is not logged into the McRUN account.
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 16, 2025
@@ -105,7 +136,15 @@ function getMatchingPayments_(sender, maxMatches) {
 /** 2️⃣ 👉 FUNCTION HANDLING STRIPE OR ZEFFY TRANSACTIONS 👈  *\
 
 /**
- * Process a single Gmail thread to find a matching member's payment.
+ * Processes a Gmail thread to find a matching member's payment email.
+ * 
+ * @param {Gmail.GmailThread} thread  The Gmail thread to process.
+ * @param {string[]} searchTerms  An array of search terms to match against the email body.
+ * @returns {boolean}  True if a match is found in the thread, otherwise false.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  May 15, 2025
  */
 
 function processOnlineThread_(thread, searchTerms) {
@@ -140,7 +179,14 @@ function processOnlineThread_(thread, searchTerms) {
 
 /**  3️⃣ 👉 FUNCTIONS HANDLING INTERAC TRANSACTIONS 👈  */
 
-// Interac e-Transfer emails can be matched by a member's full name
+/**
+ * Processes Interac e-Transfer threads to find a matching member's payment.
+ * If found, it moves the thread to the specified label, else sends an email notification.
+ * 
+ * @param {Gmail.GmailThread} thread  The Gmail thread to process.
+ * @param {string[]} searchTerms  An array of search terms to match against the email body.
+ * @returns {boolean}  True if a match is found in the thread, otherwise false.
+ */
 function processInteracThreads_(thread, searchTerms) {
   const messages = thread.getMessages();
 
@@ -155,12 +201,19 @@ function processInteracThreads_(thread, searchTerms) {
       return true;
     }
   }
-
   return false;
 }
 
 
-/** EMAIL NOTIFICATION */
+/**
+ * Sends a notification email for an unidentified payment to the club's inbox.
+ * 
+ * @param {string} fullName  The full name of the member whose payment could not be identified.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  May 20, 2025
+ */
 
 function notifyUnidentifiedPayment_(fullName) {
   const emailBody = 

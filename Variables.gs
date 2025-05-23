@@ -23,18 +23,24 @@ const IMPORT_NAME = 'Import';
 const IMPORT_SHEET_ID = 1261031931;
 const IMPORT_SHEET = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(IMPORT_NAME);
 
-// BACKUP USING SHEET ID
+// Returns the `Registration` sheet, falling back to the sheet ID if the name is unavailable.
 const GET_REGISTRATION_SHEET_ = () => {
   return (REGISTRATION_SHEET) ?? SpreadsheetApp.getActiveSpreadsheet().getSheetById(SHEET_ID);
 }
 
+// Returns the `Import` sheet, falling back to the sheet ID if the name is unavailable.
 const GET_IMPORT_SHEET_ = () => {
   return (IMPORT_SHEET) ?? SpreadsheetApp.getActiveSpreadsheet().getSheetById(IMPORT_SHEET_ID);
 }
 
 const TIMEZONE = getUserTimeZone_();
 
-/** KEYS MUST MATCH POST DATA FROM FILLOUT WITH SHEET COL */
+/**
+ * Maps column names to their respective indices in the `Registration` sheet.
+ * Keys must match the post data from the form submission.
+ * 
+ * @constant {Object<string, number>}
+ */
 const COL_MAP = {
   submissionTime : 0,
   firstName : 1,

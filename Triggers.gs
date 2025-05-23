@@ -19,11 +19,17 @@ const TRIGGER_BASE_ID = 'feeCheckTrigger';
 const FEE_MAX_CHECKS = 2;
 const TRIGGER_FREQUENCY = 5;  // Minutes
 
-
 /**
- * Handler function for time-based trigger to check fee payment.
+ * Creates a new time-based trigger to check fee payment for a specific member.
  * 
- * No arguments allowed since trigger does not accept any.
+ * The trigger runs periodically and stores the member's details in script properties.
+ * If the payment is not found after a maximum number of attempts, an email notification is sent.
+ * 
+ * @param {number} row  The row number in the `Registration` sheet for the member.
+ * @param {Object} feeDetails  The member's payment details.
+ * @param {string} feeDetails.fullName  The member's full name.
+ * @param {string} feeDetails.email  The member's email address.
+ * @param {string} feeDetails.paymentMethod  The payment method used by the member.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  May 20, 2025
@@ -55,10 +61,18 @@ function createNewFeeTrigger_(row, feeDetails) {
 
 
 /**
- * Handler function for time-based trigger to check fee payment.
+ * Handler function for time-based triggers to check fee payment.
  * 
- * No arguments allowed since trigger does not accept any.
- * Workaround: store member details in script properties.
+ * This function processes all active triggers, checking if the payment has been confirmed.
+ * If the payment is found, the trigger is cleaned up. If the maximum number of attempts is reached,
+ * an email notification is sent to notify about the unidentified payment.
+ * 
+ * @throws {Error} If a trigger cannot be deleted or script properties cannot be updated.
+ * 
+ * @trigger Time-based trigger.
+ * 
+ * @see createNewFeeTrigger_
+ * @see notifyUnidentifiedPayment_
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  May 20, 2025
@@ -93,7 +107,12 @@ function runFeeChecker() {
     }
   }
 
-  /** Helper: check if payment already found */
+  /**
+   * Checks if the payment has already been confirmed for a member.
+   * 
+   * @param {integer} memberRow  The row number in the `Registration` sheet for the member.
+   * @returns {boolean}  True if the payment is confirmed, otherwise false.
+   */
   function isPaymentFound(memberRow) {
     const sheet = GET_REGISTRATION_SHEET_();
     const confirmedCol = COL_MAP.paymentConfirmed + 1;
@@ -101,14 +120,23 @@ function runFeeChecker() {
     return currentFeeValue.trim() == true;
   }
 
-  /** Helper: increment tries and log data */
+  /**
+   * Increments the number of attempts for a trigger and updates the script properties.
+   * 
+   * @param {string} key  The key for the trigger in script properties.
+   * @param {Object} triggerData  The trigger data to update.
+   */
   function incrementTries(key, triggerData) {
     Logger.log(`Fee payment check #${triggerData.tries} for '${triggerData.feeDetails.fullName}'`);
     triggerData.tries++;
     scriptProperties.setProperty(key, JSON.stringify(triggerData));
   }
 
-  /** Helper: check for payment again */
+  /**
+   * Checks the payment status for a member again.
+   * 
+   * @param {Object} feeDetails  The member's payment details.
+   */
   function checkThisFeeAgain(feeDetails) {
     const isPaid = checkPayment_(feeDetails);
     if (isPaid) {
@@ -117,13 +145,23 @@ function runFeeChecker() {
     Logger.log(`➡️ Payment verification for '${feeDetails.fullName}' returned: ${isPaid}`);
   }
 
-  /** Helper: remove trigger and data in script properties */
+  /**
+   * Cleans up a trigger by deleting it and removing its data from script properties.
+   * 
+   * @param {string} key  The key for the trigger in script properties.
+   * @param {string} triggerId  The unique ID of the trigger to delete.
+   */
   function cleanUpTrigger(key, triggerId) {
     deleteTriggerById(triggerId);
     scriptProperties.deleteProperty(key);
   }
 
-  /** Helper: delete a trigger by ID */
+  /**
+   * Deletes a trigger by its unique ID.
+   * 
+   * @param {string} triggerId  The unique ID of the trigger to delete.
+   * @throws {Error}  If the trigger cannot be found.
+   */
   function deleteTriggerById(triggerId) {
     const triggers = ScriptApp.getProjectTriggers();
     let isFound = false;
@@ -132,12 +170,13 @@ function runFeeChecker() {
       if (trigger.getUniqueId() === triggerId) {
         isFound = true;
         ScriptApp.deleteTrigger(trigger);
+        Logger.log(`Trigger with id ${triggerId} deleted!`);
         break;
       }
     }
-    // Log success or throw error if not found
-    const raiseError = () => { throw new Error(`⚠️ Trigger with id ${triggerId} not found`) }
-    isFound ? Logger.log(`Trigger with id ${triggerId} deleted!`) : raiseError();
+
+    if (!isFound) {
+      throw new Error(`⚠️ Trigger with id ${triggerId} not found`)
+    }
   }
 }
-

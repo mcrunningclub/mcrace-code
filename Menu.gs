@@ -14,10 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 /**
- * Creates custom menu to run frequently used scripts in Google App Script.
+ * Creates a custom menu to run frequently used scripts in Google Apps Script.
  *
- * Extracting function name using `name` property to allow for refactoring.
+ * The menu includes options for importing data, formatting sheets, and verifying payments.
+ * Function names are extracted dynamically using the `name` property to allow for easier refactoring.
  *
  * @trigger Open Google Spreadsheet.
  *
@@ -47,6 +49,12 @@ function onOpen() {
 
 /**
  * Displays a help message for the custom McRUN menu.
+ *
+ * The help message provides guidance on how to use the menu options and contact information for assistance.
+ *
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date Apr 21, 2025
+ * @update Apr 21, 2025
  */
 
 function helpUI_() {
@@ -65,18 +73,19 @@ function helpUI_() {
 }
 
 
-/**
- * Boiler plate function to display custom UI to user.
+/** 
+ * Displays a confirmation dialog and executes a user-selected function.
  *
- * Executes function `functionName` with optional argument `funcArg`.
+ * This function is used to confirm user actions before executing a specific function.
+ * It dynamically calls the specified function by its name and passes an optional argument.
  *
  * @trigger User choice in custom menu.
  *
- * @param {string}  functionName  Name of function to execute.
- * @param {string}  [additionalMsg=""]  Custom message for executing function.
- *                                      Defaults to empty string.
- * @param {string}  [funcArg=""]  Function argument to pass with `functionName`.
- *                                Defaults to empty string.
+ * @param {string} functionName  The name of the function to execute.
+ * @param {string} [additionalMsg=""]  A custom message to display during execution.
+ *                                     Defaults to empty string.
+ * @param {string} [funcArg=""]  An optional argument to pass to the function.
+ *                               Defaults to empty string.
  *
  * @return {string}  Return value of the executed function.
  *
@@ -120,7 +129,15 @@ function confirmAndRunUserChoice_(functionName, additionalMsg = "", funcArg = ""
 
 
 /**
- * Helper functions to prompt user for row, and process response
+ * Prompts the user to input a row number and processes the response.
+ *
+ * This function is used to get user input for targeting a specific row in the sheet.
+ *
+ * @returns {Object} An object containing the row number and a message.
+ *
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Mar 24, 2025
+ * @update Mar 24, 2025
  */
 
 function requestRowInput_() {
@@ -136,13 +153,13 @@ function requestRowInput_() {
 
 
 /**
- * Returns result of reponse processing for row input.
+ * Processes the user's row input and returns the result.
  *
- * Helper function for UI functions for McRUN menu.
+ * This function validates the user's input and determines the row to target.
  *
  * @param {string} userResponse  User response text from `SpreadsheetApp.getUi().prompt`
  * @param {GoogleAppsScript.Base.Ui} ui  User interface in Google Sheets
- * @return {Result} `Result`  Packaged result of processing.
+ * @return {Object}  An object containing the parsed row number and a message.
  * 
  * ### Properties of Return Object
  * - ```Result.row {integer}``` — Parsed integer value of `userResponse`.
@@ -179,12 +196,10 @@ function processRowInput_(userResponse, ui) {
 
 
 /**
- * Returns true if row is int and found in registration sheet.
+ * Validates if the given row number exists in the registration sheet.
  *
- * Helper function for UI functions for McRUN menu.
- *
- * @param {number}  The row number in sheet 1-indexed.
- * @return {boolean}  Returns true if valid row in sheet.
+ * @param {integer} row   The row number to validate.
+ * @returns {boolean}  True if the row is valid, otherwise false.
  *
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>) & ChatGPT
  * @date  Dec 6, 2024
@@ -202,6 +217,14 @@ function isValidRow_(row) {
 
 /** IMPORT MENU FUNCTIONS */
 
+/**
+ * Adds a trigger to process a specific row from the import sheet.
+ *
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
+ */
+
 function addImportTriggerUI_() {
   const result = requestRowInput_();  // {row : int, msg : string}
   const selectedRow = result.row;
@@ -215,14 +238,29 @@ function addImportTriggerUI_() {
   confirmAndRunUserChoice_(functionName, fullMsg, selectedRow);
 }
 
+
 /** REGISTRATIONS MENU FUNCTIONS */
 
+/**
+ * Prettifies the registration sheet by applying formatting rules.
+ *
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  Apr 21, 2025
+ */
 function prettifySheetUI_() {
   const functionName = formatSpecificColumns.name;
   const customMsg = "This will update the sheet's view"
   confirmAndRunUserChoice_(functionName, customMsg);
 }
 
+/**
+ * Verifies the payment status for a specific row in the registration sheet.
+ *
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date Apr 21, 2025
+ * @update Apr 21, 2025
+ */
 function verifyPaymentUI_() {
   const result = requestRowInput_();  // {row : int, msg : string}
   const selectedRow = result.row;
