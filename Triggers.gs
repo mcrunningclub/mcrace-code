@@ -33,7 +33,7 @@ const TRIGGER_FREQUENCY = 5;  // Minutes
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  May 20, 2025
- * @update  May 20, 2025
+ * @update  May 23, 2025
  */
 
 function createNewFeeTrigger_(row, feeDetails) {
@@ -48,13 +48,11 @@ function createNewFeeTrigger_(row, feeDetails) {
   const triggerData = JSON.stringify({
     tries: 1,
     triggerId: trigger.getUniqueId(),
-    feeDetails: feeDetails,
+    feeDetails,
     rowNum: row,
   });
 
-  // Label trigger key with member name, and log trigger data
-  const key = TRIGGER_BASE_ID + (feeDetails.fullName).replace(' ', '');
-  
+  const key = `${TRIGGER_BASE_ID}${feeDetails.fullName.replace(' ', '')}`;
   scriptProperties.setProperty(key, triggerData);
   Logger.log(`Created new trigger '${key}', running every ${TRIGGER_FREQUENCY} min.\n\n${triggerData}`);
 }
@@ -76,31 +74,30 @@ function createNewFeeTrigger_(row, feeDetails) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  May 20, 2025
- * @update  May 20, 2025
+ * @update  May 23, 2025
  */
 
 function runFeeChecker() {
   const scriptProperties = PropertiesService.getScriptProperties();
   const allProps = scriptProperties.getProperties();
 
-  for (let key in allProps) {
+  for (const key in allProps) {
     if (!key.startsWith(TRIGGER_BASE_ID)) continue;
 
     const triggerData = JSON.parse(allProps[key]);
     const { tries, triggerId, feeDetails, rowNum } = triggerData;
-    
+
     if (isPaymentFound(rowNum)) {
       // If found, clean up trigger and data in script properties
       cleanUpTrigger(key, triggerId);
       Logger.log(`✅ Payment found for '${feeDetails.fullName}' after ${tries} tries`);
-    }
-    else if (tries <= FEE_MAX_CHECKS) {
+    } else if (tries <= FEE_MAX_CHECKS) {
       // Limit not reach, check again and increment 'tries'
       incrementTries(key, triggerData);
       checkThisFeeAgain(feeDetails);
     }
     else {
-      // Send email notification if limit is reached
+    // Send email notification if limit is reached
       cleanUpTrigger(key, triggerId);
       notifyUnidentifiedPayment_(feeDetails.fullName);
       Logger.log(`❌ Max tries reached for '${feeDetails.fullName}', sending email and stopping checks`);
@@ -164,19 +161,13 @@ function runFeeChecker() {
    */
   function deleteTriggerById(triggerId) {
     const triggers = ScriptApp.getProjectTriggers();
-    let isFound = false;
-
-    for (let trigger of triggers) {
+    for (const trigger of triggers) {
       if (trigger.getUniqueId() === triggerId) {
-        isFound = true;
         ScriptApp.deleteTrigger(trigger);
         Logger.log(`Trigger with id ${triggerId} deleted!`);
-        break;
+        return;
       }
     }
-
-    if (!isFound) {
-      throw new Error(`⚠️ Trigger with id ${triggerId} not found`)
-    }
+    throw new Error(`⚠️ Trigger with id ${triggerId} not found`);
   }
 }

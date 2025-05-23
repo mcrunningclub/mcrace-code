@@ -24,16 +24,12 @@ const IMPORT_SHEET_ID = 1261031931;
 const IMPORT_SHEET = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(IMPORT_NAME);
 
 // Returns the `Registration` sheet, falling back to the sheet ID if the name is unavailable.
-const GET_REGISTRATION_SHEET_ = () => {
-  return (REGISTRATION_SHEET) ?? SpreadsheetApp.getActiveSpreadsheet().getSheetById(SHEET_ID);
-}
+const GET_REGISTRATION_SHEET_ = () => REGISTRATION_SHEET || SpreadsheetApp.getActiveSpreadsheet().getSheetById(SHEET_ID);
 
 // Returns the `Import` sheet, falling back to the sheet ID if the name is unavailable.
-const GET_IMPORT_SHEET_ = () => {
-  return (IMPORT_SHEET) ?? SpreadsheetApp.getActiveSpreadsheet().getSheetById(IMPORT_SHEET_ID);
-}
+const GET_IMPORT_SHEET_ = () => IMPORT_SHEET || SpreadsheetApp.getActiveSpreadsheet().getSheetById(IMPORT_SHEET_ID);
 
-const TIMEZONE = getUserTimeZone_();
+const TIMEZONE = Session.getScriptTimeZone();
 
 /**
  * Maps column names to their respective indices in the `Registration` sheet.
@@ -42,43 +38,29 @@ const TIMEZONE = getUserTimeZone_();
  * @constant {Object<string, number>}
  */
 const COL_MAP = {
-  submissionTime : 0,
-  firstName : 1,
-  lastName : 2,
-  age : 3,
-  gender : 4,
-  phoneNumber : 5,
-  email : 6,
-  emergencyName : 7,
-  emergencyPhoneNumber : 8,
-  level : 9,
-  isMember : 10,
-  school : 11,
-  signature : 12,
-  signatureDate : 13,
-  guardianSignature : 14,
-  guardianDate : 15,
-  paymentMethod : 16,
-  comments : 17,
-  paymentAmount : 18,
-  
+  submissionTime: 0,
+  firstName: 1,
+  lastName: 2,
+  age: 3,
+  gender: 4,
+  phoneNumber: 5,
+  email: 6,
+  emergencyName: 7,
+  emergencyPhoneNumber: 8,
+  level: 9,
+  isMember: 10,
+  school: 11,
+  signature: 12,
+  signatureDate: 13,
+  guardianSignature: 14,
+  guardianDate: 15,
+  paymentMethod: 16,
+  comments: 17,
+  paymentAmount: 18,
   /** COLUMNS NOT IN POST DATA */
-  paymentConfirmed : 19,
-  paymentDate : 20,
-  emailLog : 21,
-}
-
-
-/**
- * Returns timezone for currently running script.
- *
- * Prevents incorrect time formatting during time changes like Daylight Savings Time.
- *
- * @return {string}  Timezone as geographical location (e.g.`'America/Montreal'`).
- */
-
-function getUserTimeZone_() {
-  return Session.getScriptTimeZone();
+  paymentConfirmed: 19,
+  paymentDate: 20,
+  emailLog: 21,
 }
 
 
@@ -90,7 +72,5 @@ function getUserTimeZone_() {
  * @return {string}  Email of current user.
  */
 
-function getCurrentUserEmail_() {
-  return Session.getActiveUser().toString();
-}
+const getCurrentUserEmail_ = () => Session.getActiveUser().getEmail();
 

@@ -29,10 +29,15 @@ const INTERAC_LABEL = 'Fee Payments/Interac Emails';
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  Apr 23, 2025
+ * @update  May 23, 2025
  */
 function getGmailLabel_(labelName) {
-  return GmailApp.getUserLabelByName(labelName);
+  try {
+    return GmailApp.getUserLabelByName(labelName);
+  } catch (error) {
+    Logger.log(`Error retrieving Gmail label: ${error.message}`);
+    throw new Error('Failed to retrieve Gmail label.');
+  }
 }
 
 
@@ -44,7 +49,8 @@ function getGmailLabel_(labelName) {
  * @returns {string}  The Gmail search string.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date Apr 21, 2025  (Apr 23, 2025)
+ * @date Apr 21, 2025
+ * @update  Apr 23, 2025
  */
 function getGmailSearchString_(sender, offset) {
   const minDate = new Date(Date.now() - offset);
@@ -61,15 +67,19 @@ function getGmailSearchString_(sender, offset) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  Apr 23, 2025
+ * @update  May 23, 2025
  */
 
 function cleanUpMatchedThread_(thread, label) {
-  thread.markRead();
-  thread.moveToArchive();
-  thread.addLabel(label);
-
-  console.log('Thread cleaned up. Now removed from inbox');
+  try {
+    thread.markRead();
+    thread.moveToArchive();
+    thread.addLabel(label);
+    Logger.log('Thread cleaned up and removed from inbox.');
+  } catch (error) {
+    Logger.log(`Error cleaning up thread: ${error.message}`);
+    throw new Error('Failed to clean up Gmail thread.');
+  }
 }
 
 
@@ -82,15 +92,15 @@ function cleanUpMatchedThread_(thread, label) {
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 15, 2025
- * @update  Apr 21, 2025
+ * @update  May 23, 2025
  */
 
 function matchMemberInPaymentEmail_(searchTerms, emailBody) {
-  if (searchTerms.length === 0) return false; // Prevent empty regex errors
+  if (!searchTerms.length) return false;
 
-  const formatedBody = emailBody.replace(/\*/g, '');    // Remove astericks around terms
+  const formattedBody = emailBody.replace(/\*/g, '');
   const searchPattern = new RegExp(`\\b(${searchTerms.join('\\b|\\b')})\\b`, 'i');
-  return searchPattern.test(formatedBody);
+  return searchPattern.test(formattedBody);
 }
 
 
@@ -186,6 +196,8 @@ function processOnlineThread_(thread, searchTerms) {
  * @param {Gmail.GmailThread} thread  The Gmail thread to process.
  * @param {string[]} searchTerms  An array of search terms to match against the email body.
  * @returns {boolean}  True if a match is found in the thread, otherwise false.
+ * @date  Apr 21, 2025
+ * @update  May 15, 2025
  */
 function processInteracThreads_(thread, searchTerms) {
   const messages = thread.getMessages();

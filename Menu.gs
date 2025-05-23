@@ -53,8 +53,8 @@ function onOpen() {
  * The help message provides guidance on how to use the menu options and contact information for assistance.
  *
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date Apr 21, 2025
- * @update Apr 21, 2025
+ * @date  Apr 21, 2025
+ * @update  May 23, 2025
  */
 
 function helpUI_() {
@@ -69,7 +69,7 @@ function helpUI_() {
   `;
 
   // Display the help message
-  ui.alert("McRace Menu Help", helpMessage.trim(), ui.ButtonSet.OK);
+  ui.alert('McRace Menu Help', helpMessage.trim(), ui.ButtonSet.OK);
 }
 
 
@@ -91,22 +91,16 @@ function helpUI_() {
  *
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  Apr 21, 2025
+ * @update  May 23, 2025
  */
 
-function confirmAndRunUserChoice_(functionName, additionalMsg = "", funcArg = "") {
+function confirmAndRunUserChoice_(functionName, additionalMsg = '', funcArg = '') {
   const ui = SpreadsheetApp.getUi();
   const userEmail = getCurrentUserEmail_();
 
-  // Continue execution if user is authorized
-  var message = `
-    ⚙️ Now executing ${functionName}().
-
-    🚨 Press cancel to stop.
-  `;
-
-  // Append additional message if non-empty
-  message += additionalMsg ? `\n🔔 ${additionalMsg}` : "";
+   // Continue execution if user is authorized
+  let message = `⚙️ Now executing ${functionName}().\n\n🚨 Press cancel to stop.`;
+  if (additionalMsg) message += `\n🔔 ${additionalMsg}`;
 
   // Save user response
   const response = ui.alert(message, ui.ButtonSet.OK_CANCEL);
@@ -137,17 +131,14 @@ function confirmAndRunUserChoice_(functionName, additionalMsg = "", funcArg = ""
  *
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 24, 2025
- * @update Mar 24, 2025
+ * @update  May 23, 2025
  */
 
 function requestRowInput_() {
   const ui = SpreadsheetApp.getUi();
-  const headerMsg = "Which row do you want to target?";
-  const textMsg = "Enter the row number, or leave empty for the last row.";
-
-  const response = ui.prompt(headerMsg, textMsg, ui.ButtonSet.OK);
+  const response = ui.prompt('Which row do you want to target?', 
+    'Enter the row number, or leave empty for the last row.', ui.ButtonSet.OK);
   const responseText = response.getResponseText().trim();
-
   return processRowInput_(responseText, ui);
 }
 
@@ -169,29 +160,22 @@ function requestRowInput_() {
  * ### Metadata
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 24, 2025
- * @update  Mar 24, 2025
+ * @update  May 23, 2025
  */
 
 function processRowInput_(userResponse, ui) {
   const rowNumber = Number.parseInt(userResponse);
-  const returnObj = { row: null, msg: '' };
-
-  if (userResponse === "") {
+  if (userResponse === '') {
     // User did not enter a row number; check last row only.
-    returnObj.row = '';
-    returnObj.msg = "This will only target the last row.";
-  }
-  else if (isValidRow_(rowNumber)) {
+    return { row: '', msg: 'This will only target the last row.' };
+  } else if (isValidRow_(rowNumber)) {
     // Row is valid, can continue execution.
-    returnObj.row = rowNumber;
-    returnObj.msg = `This will only target row ${rowNumber}.`
-  }
-  else {
+    return { row: rowNumber, msg: `This will only target row ${rowNumber}.` };
+  } else {
     // Input value is invalid row. Stop execution.
-    ui.alert("Incorrect row number, please try again with a valid row number.");
+    ui.alert('Incorrect row number, please try again with a valid row number.');
+    return { row: null, msg: '' };
   }
-
-  return returnObj;
 }
 
 
@@ -203,15 +187,13 @@ function processRowInput_(userResponse, ui) {
  *
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>) & ChatGPT
  * @date  Dec 6, 2024
- * @update  Apr 21, 2025
+ * @update  May 23, 2025
  */
 
 function isValidRow_(row) {
   const sheet = GET_REGISTRATION_SHEET_();
   const lastRow = sheet.getLastRow();
-  const rowInt = parseInt(row);
-
-  return (Number.isInteger(rowInt) && rowInt >= 0 && rowInt <= lastRow);
+  return Number.isInteger(row) && row > 0 && row <= lastRow;
 }
 
 

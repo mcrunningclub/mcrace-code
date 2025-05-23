@@ -23,13 +23,18 @@ limitations under the License.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  Apr 23, 2025
+ * @update  May 23, 2025
  */
 
 function appendToImport(reg) {
+try {
   const importSheet = GET_IMPORT_SHEET_();
   importSheet.appendRow([reg]);
   return importSheet.getLastRow();
+} catch (error) {
+    Logger.log(`Error appending to import sheet: ${error.message}`);
+    throw new Error('Failed to append registration to import sheet.');
+  }
 }
 
 
@@ -100,11 +105,11 @@ function onChange(e) {
       console.log(`Received following data:\n${rawData}`);
       
       const registrationObj = JSON.parse(rawData);
-      
+     
       // STEP 2 : Add processed post data in Registration
       const processed = addNewRegistration_(registrationObj);
       console.log(`Completed ${addNewRegistration_.name} successfully!`);
-      
+       
       // STEP 3 : Process new registration
       onNewRegistration_(processed);
       console.log(`Completed ${onNewRegistration_.name} successfully!`);

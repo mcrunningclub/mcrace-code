@@ -20,8 +20,8 @@ limitations under the License.
  * @return {integer}  The last non-empty row in the `Registration` sheet.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date Apr 21, 2025
- * @update Apr 23, 2025
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
  */
 
 function getLastRowInReg_() {
@@ -38,11 +38,11 @@ function getLastRowInReg_() {
  * @param {Object[]} this.member  The formatted member values added in the `Registration` sheet.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date Apr 21, 2025
- * @update Apr 23, 2025
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
  */
 
-function onNewRegistration_({ newRow : row, member : memberArr }) {
+function onNewRegistration_({ newRow: row, member: memberArr }) {
   const paymentInfo = extractPaymentInfo_(memberArr);
   checkAndSetPayment(row, paymentInfo);
   formatSpecificColumns();
@@ -58,30 +58,29 @@ function onNewRegistration_({ newRow : row, member : memberArr }) {
  * @returns {Object}  An object containing the new row and formatted member data.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date Apr 21, 2025
- * @update Apr 23, 2025
+ * @date  Apr 21, 2025
+ * @update  May 23, 2025
  */
 
 function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
   const entries = Object.entries(COL_MAP);
 
-  // Push values to respective index using key-index mapping
+// Push values to respective index using key-index mapping
   const formatted = entries.reduce((acc, [key, i]) => {
     acc[i] = format(key);
     return acc;
   }, new Array(entries.length));
 
-  // Set formatted values in registration sheet
+// Set formatted values in registration sheet
   const newRow = getLastRowInReg_() + 1;
-  const numCol = formatted.length;
-  sheet.getRange(newRow, 1, 1, numCol).setValues([formatted]);
+  sheet.getRange(newRow, 1, 1, formatted.length).setValues([formatted]);
 
-  // Return GSheet row and values for payment
+// Return GSheet row and values for payment
   Logger.log(`Set following values in Registrations (row ${newRow}): ${formatted}`);
-  return { newRow : newRow, member : formatted };
+  return { newRow, member: formatted };
 
-  /** Helper functions */
+/** Helper functions */
   function format(key) {
     if (key === 'submissionTime') {
       return formatTimestamp(registrationObj?.[key]);
@@ -92,7 +91,7 @@ function addNewRegistration_(registrationObj) {
 
   function formatTimestamp(raw) {
     const timestamp = new Date(raw);
-    return Utilities.formatDate(timestamp,TIMEZONE, "yyyy-MM-dd HH:mm:ss");
+    return Utilities.formatDate(timestamp, TIMEZONE, 'yyyy-MM-dd HH:mm:ss');
   }
 }
 
@@ -116,11 +115,11 @@ function extractPaymentInfo_(memberArr) {
   const lastName = getValue(COL_MAP.lastName);
 
   return {
-    fName : firstName,
-    lName : lastName,
-    fullName : `${firstName} ${lastName}`,
-    email : getValue(COL_MAP.email),
-    paymentMethod : getValue(COL_MAP.paymentMethod),
+    fName: firstName,
+    lName: lastName,
+    fullName: `${firstName} ${lastName}`,
+    email: getValue(COL_MAP.email),
+    paymentMethod: getValue(COL_MAP.paymentMethod),
   };
 }
 
@@ -139,13 +138,13 @@ function extractPaymentInfo_(memberArr) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  Apr 23, 2025
+ * @update  May 23, 2025
  */
 
 function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet()) {
-  // Find member transaction using packaged info (name, payment method, ...)
+// Find member transaction using packaged info (name, payment method, ...)
   const isFound = checkPayment_(feeDetails);
-  if (isFound) { 
+  if (isFound) {
     setFeePaid_(row);
     console.log(`Successfully found transaction email for ${feeDetails.fullName}!`);  // Log success message;
   }
@@ -155,13 +154,12 @@ function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSh
     console.error(`Unable to find payment confirmation for '${feeDetails.fullName}'. Creating new scheduled trigger to check later.`);
     createNewFeeTrigger_(row, feeDetails);
   }
-
   return isFound;
 
-  /** Helper Function */
+/** Helper Function */
   function extractFromSheet() {
     const sheet = GET_REGISTRATION_SHEET_();
-    memberArr = sheet.getSheetValues(row, 1, 1, -1)[0];
+    const memberArr = sheet.getSheetValues(row, 1, 1, -1)[0];
     return extractPaymentInfo_(memberArr);
   }
 }

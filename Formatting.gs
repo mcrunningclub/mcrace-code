@@ -42,7 +42,7 @@ function removeDiacritics_(str) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  Apr 23, 2025
+ * @update  May 23, 2025
  */
 
 function formatSpecificColumns() {
@@ -70,21 +70,20 @@ function formatSpecificColumns() {
   ]).setHorizontalAlignment('center');
 
   // 4. Set number formatting
-  const dateTimeFormat = "yyyy-mm-dd hh:MM:ss";
+  const dateTimeFormat = 'yyyy-mm-dd hh:MM:ss';
   getThisRange('A2:A').setNumberFormat(dateTimeFormat);
 
-  const phoneFormat = "+0 (000) 000-0000";
-  getThisRange(['F2:F', 'I2:I']).setNumberFormat([phoneFormat]);  // Phone numbers
+  const phoneFormat = '+0 (000) 000-0000';
+  getThisRange(['F2:F', 'I2:I']).setNumberFormat([phoneFormat]);
 
-  const dateFormat = "yyyy-mm-dd";
+  const dateFormat = 'yyyy-mm-dd';
   getThisRange(['N2:N', 'U2:U']).setNumberFormat([dateFormat]);
 
   // 5. Add checkboxes to non-empty rows
   addMissingCheckboxes_(sheet);
 
   // 6. Update banding by increasing range
-  const cell = sheet.getRange(1,1);
-  const banding = cell.getBandings()[0];
+  const banding = sheet.getRange(1, 1).getBandings()[0];
   banding.setRange(sheet.getDataRange());
 }
 
@@ -96,7 +95,7 @@ function formatSpecificColumns() {
  *                                                                  Defaults to the registration sheet.
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 23, 2025
- * @update  Apr 23, 2025
+ * @update  May 23, 2025
  */
 
 function addMissingCheckboxes_(sheet = GET_REGISTRATION_SHEET_()) {
