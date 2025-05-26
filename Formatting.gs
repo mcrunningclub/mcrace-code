@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 /**
  * Removes diacritics (accents) from a given string.
  * 
@@ -103,4 +102,3 @@ function addMissingCheckboxes_(sheet = GET_REGISTRATION_SHEET_()) {
   const numRows = lastRow - 1;    // Remove header
   sheet.getRange(2, COL_MAP.paymentConfirmed + 1, numRows).insertCheckboxes();
 }
-

@@ -249,4 +249,3 @@ function notifyUnidentifiedPayment_(fullName) {
 
   GmailApp.sendEmail(email.to, email.subject, email.body, email.options);
 }
-

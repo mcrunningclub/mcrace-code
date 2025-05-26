@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 /**
  * Creates a custom menu to run frequently used scripts in Google Apps Script.
  *

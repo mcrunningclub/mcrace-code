@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 /**
  * Appends a registration object to the import sheet.
  * 
@@ -27,11 +26,11 @@ limitations under the License.
  */
 
 function appendToImport(reg) {
-try {
-  const importSheet = GET_IMPORT_SHEET_();
-  importSheet.appendRow([reg]);
-  return importSheet.getLastRow();
-} catch (error) {
+  try {
+    const importSheet = GET_IMPORT_SHEET_();
+    importSheet.appendRow([reg]);
+    return importSheet.getLastRow();
+  } catch (error) {
     Logger.log(`Error appending to import sheet: ${error.message}`);
     throw new Error('Failed to append registration to import sheet.');
   }
@@ -163,4 +162,3 @@ function doPost(e) {
     return ContentService.createTextOutput(outputMessage);
   }
 }
-

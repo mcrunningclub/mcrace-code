@@ -73,4 +73,3 @@ const COL_MAP = {
  */
 
 const getCurrentUserEmail_ = () => Session.getActiveUser().getEmail();
-
