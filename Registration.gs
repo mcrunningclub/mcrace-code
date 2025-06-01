@@ -131,7 +131,7 @@ function extractPaymentInfo_(memberArr) {
  * If not found, schedules a trigger to recheck the inbox and sends a notification if necessary.
  * 
  * @param {integer} [row=getLastRowInReg_()]  The row to update in the `Registration` sheet.
- * @param {Object} [feeDetails=extractFromSheet()]  The member's payment details.
+ * @param {Object} [feeDetails=extractFromSheet_()]  The member's payment details.
  * @returns {boolean}  True if the payment is found, otherwise false.
  * 
  * @throws {Error}  If payment verification fails after multiple attempts.
@@ -141,7 +141,7 @@ function extractPaymentInfo_(memberArr) {
  * @update  May 23, 2025
  */
 
-function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet()) {
+function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet_(row)) {
 // Find member transaction using packaged info (name, payment method, ...)
   const isFound = checkPayment_(feeDetails);
   if (isFound) {
@@ -155,13 +155,13 @@ function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSh
     createNewFeeTrigger_(row, feeDetails);
   }
   return isFound;
+}
 
 /** Helper Function */
-  function extractFromSheet() {
-    const sheet = GET_REGISTRATION_SHEET_();
-    const memberArr = sheet.getSheetValues(row, 1, 1, -1)[0];
-    return extractPaymentInfo_(memberArr);
-  }
+function extractFromSheet_(row) {
+  const sheet = GET_REGISTRATION_SHEET_();
+  const memberArr = sheet.getSheetValues(row, 1, 1, -1)[0];
+  return extractPaymentInfo_(memberArr);
 }
 
 

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 /** LABELS FOR GMAIL ACCOUNT */
-const ONLINE_LABEL = 'Fee Payments/Online';
+const ONLINE_LABEL = 'Fee Payments/Online Emails';
 const INTERAC_LABEL = 'Fee Payments/Interac Emails';
 
 

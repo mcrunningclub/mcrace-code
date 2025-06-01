@@ -94,7 +94,7 @@ function runFeeChecker() {
     } else if (tries <= FEE_MAX_CHECKS) {
       // Limit not reach, check again and increment 'tries'
       incrementTries(key, triggerData);
-      checkThisFeeAgain(feeDetails);
+      checkThisFeeAgain(feeDetails, rowNum);
     }
     else {
     // Send email notification if limit is reached
@@ -133,11 +133,12 @@ function runFeeChecker() {
    * Checks the payment status for a member again.
    * 
    * @param {Object} feeDetails  The member's payment details.
+   * @param {number} rowNum  The row number in GSheet.
    */
-  function checkThisFeeAgain(feeDetails) {
+  function checkThisFeeAgain(feeDetails, rowNum) {
     const isPaid = checkPayment_(feeDetails);
     if (isPaid) {
-      setFeePaid_(row);
+      setFeePaid_(rowNum);
     }
     Logger.log(`➡️ Payment verification for '${feeDetails.fullName}' returned: ${isPaid}`);
   }
