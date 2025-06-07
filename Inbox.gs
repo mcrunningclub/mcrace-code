@@ -69,7 +69,6 @@ function getGmailSearchString_(sender, offset) {
  * @date  Apr 21, 2025
  * @update  May 23, 2025
  */
-
 function cleanUpMatchedThread_(thread, label) {
   try {
     thread.markRead();
@@ -92,14 +91,15 @@ function cleanUpMatchedThread_(thread, label) {
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 15, 2025
- * @update  May 23, 2025
+ * @update  Jun 7, 2025
  */
-
 function matchMemberInPaymentEmail_(searchTerms, emailBody) {
   if (!searchTerms.length) return false;
 
+  // Remove asteriks from email body
   const formattedBody = emailBody.replace(/\*/g, '');
-  const searchPattern = new RegExp(`\\b(${searchTerms.join('\\b|\\b')})\\b`, 'i');
+  
+  const searchPattern = new RegExp(`${searchTerms.join('|')}`, 'i');
   return searchPattern.test(formattedBody);
 }
 
@@ -119,7 +119,6 @@ function matchMemberInPaymentEmail_(searchTerms, emailBody) {
  * @date  Mar 16, 2025
  * @update  Apr 29, 2025
  */
-
 function getMatchingPayments_(sender, maxMatches) {
   // Ensure that correct mailbox is used
   if (getCurrentUserEmail_() !== CLUB_EMAIL) {
@@ -156,7 +155,6 @@ function getMatchingPayments_(sender, maxMatches) {
  * @date  Apr 21, 2025
  * @update  May 15, 2025
  */
-
 function processOnlineThread_(thread, searchTerms) {
   const messages = thread.getMessages();
   let starredCount = 0;
@@ -196,6 +194,8 @@ function processOnlineThread_(thread, searchTerms) {
  * @param {Gmail.GmailThread} thread  The Gmail thread to process.
  * @param {string[]} searchTerms  An array of search terms to match against the email body.
  * @returns {boolean}  True if a match is found in the thread, otherwise false.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
  * @update  May 15, 2025
  */
@@ -226,11 +226,10 @@ function processInteracThreads_(thread, searchTerms) {
  * @date  Apr 21, 2025
  * @update  May 20, 2025
  */
-
 function notifyUnidentifiedPayment_(fullName) {
   const emailBody = 
   `
-  Cannot find the payment confirmation email for ${fullName}.
+  Cannot find the payment confirmation email for '${fullName}'.
       
   Please manually check the inbox and update registration as required.
 

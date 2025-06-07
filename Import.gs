@@ -24,7 +24,6 @@ limitations under the License.
  * @date  Apr 21, 2025
  * @update  May 23, 2025
  */
-
 function appendToImport(reg) {
   try {
     const importSheet = GET_IMPORT_SHEET_();
@@ -46,7 +45,6 @@ function appendToImport(reg) {
  * @date  Apr 23, 2025
  * @update  Apr 23, 2025
  */
-
 function processLastImport() {
   const sheet = GET_IMPORT_SHEET_();
   const targetRow = getNextRowInQueue_();
@@ -76,9 +74,8 @@ function processLastImport() {
  * @date  Apr 24, 2025
  * @update  Apr 24, 2025
  */
-
 function onChange(e) {
-   // Get details of edit event's sheet
+  // Get details of edit event's sheet
   console.log({
     authMode: e.authMode.toString(),
     changeType: e.changeType,
@@ -125,14 +122,13 @@ function onChange(e) {
  * Handles HTTP POST requests to process new registrations.
  * 
  * @deprecated Use Zapier automation and `onChange` instead. (2025-04-29)
- * @param {GoogleAppsScript.Events.DoPost} e - The event object containing POST data.
- * @returns {GoogleAppsScript.Content.TextOutput} A text output with the result of the operation.
+ * @param {GoogleAppsScript.Events.DoPost} e  The event object containing POST data.
+ * @returns {GoogleAppsScript.Content.TextOutput}  A text output with the result of the operation.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
  * @update  Apr 29, 2025
  */
-
 function doPost(e) {
   const data = e.postData.contents;
   

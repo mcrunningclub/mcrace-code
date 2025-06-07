@@ -26,7 +26,6 @@ limitations under the License.
  * @date  Apr 21, 2025
  * @update  Apr 21, 2025
  */
-
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
 
@@ -55,7 +54,6 @@ function onOpen() {
  * @date  Apr 21, 2025
  * @update  May 23, 2025
  */
-
 function helpUI_() {
   const ui = SpreadsheetApp.getUi();
 
@@ -92,8 +90,7 @@ function helpUI_() {
  * @date  Apr 21, 2025
  * @update  May 23, 2025
  */
-
-function confirmAndRunUserChoice_(functionName, additionalMsg = '', funcArg = '') {
+function confirmAndRunUserChoice_(functionName, additionalMsg = "", funcArg = "") {
   const ui = SpreadsheetApp.getUi();
   const userEmail = getCurrentUserEmail_();
 
@@ -132,7 +129,6 @@ function confirmAndRunUserChoice_(functionName, additionalMsg = '', funcArg = ''
  * @date  Mar 24, 2025
  * @update  May 23, 2025
  */
-
 function requestRowInput_() {
   const ui = SpreadsheetApp.getUi();
   const response = ui.prompt('Which row do you want to target?', 
@@ -161,7 +157,6 @@ function requestRowInput_() {
  * @date  Mar 24, 2025
  * @update  May 23, 2025
  */
-
 function processRowInput_(userResponse, ui) {
   const rowNumber = Number.parseInt(userResponse);
   if (userResponse === '') {
@@ -188,7 +183,6 @@ function processRowInput_(userResponse, ui) {
  * @date  Dec 6, 2024
  * @update  May 23, 2025
  */
-
 function isValidRow_(row) {
   const sheet = GET_REGISTRATION_SHEET_();
   const lastRow = sheet.getLastRow();
@@ -205,7 +199,6 @@ function isValidRow_(row) {
  * @date  Apr 21, 2025
  * @update  Apr 23, 2025
  */
-
 function addImportTriggerUI_() {
   const result = requestRowInput_();  // {row : int, msg : string}
   const selectedRow = result.row;
@@ -239,8 +232,8 @@ function prettifySheetUI_() {
  * Verifies the payment status for a specific row in the registration sheet.
  *
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date Apr 21, 2025
- * @update Apr 21, 2025
+ * @date  Apr 21, 2025
+ * @update  Apr 21, 2025
  */
 function verifyPaymentUI_() {
   const result = requestRowInput_();  // {row : int, msg : string}

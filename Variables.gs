@@ -71,5 +71,4 @@ const COL_MAP = {
  * 
  * @return {string}  Email of current user.
  */
-
 const getCurrentUserEmail_ = () => Session.getActiveUser().getEmail();

@@ -24,10 +24,10 @@ const STRIPE_EMAIL = 'stripe.com';
 
 /**
  * @typedef {Object} Member
- * @property {string} firstName - The member's first name.
- * @property {string} lastName - The member's last name.
- * @property {string} email - The member's email address.
- * @property {string} paymentMethod - The payment method used by the member.
+ * @property {string} firstName  The member's first name.
+ * @property {string} lastName  The member's last name.
+ * @property {string} email  The member's email address.
+ * @property {string} paymentMethod  The payment method used by the member.
  */
 
 
@@ -95,7 +95,6 @@ function checkOnlinePayment_(member) {
  * @date  Oct 1, 2023
  * @update  Apr 23, 2025
  */
-
 function checkInteracPayment_(member) {
   const sender = INTERAC_EMAIL;
   const maxMatches = 10;
@@ -121,7 +120,6 @@ function checkInteracPayment_(member) {
  * @date  Oct 1, 2023
  * @update  Apr 21, 2025
  */
-
 function setFeePaid_(row) {
   const sheet = REGISTRATION_SHEET;
   const currentDate = Utilities.formatDate(new Date(), TIMEZONE, 'yyyy-MM-dd');
@@ -145,18 +143,28 @@ function setFeePaid_(row) {
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 21, 2025
- * @update  Apr 21, 2025
+ * @update  Jun 7, 2025
  */
-
 function createSearchTerms_(member) {
-  const lastNameHyphenated = (member.lastName).replace(/[-\s]/, '[-\\s]?'); // handle hyphenated last names
-  const fullName = `${member.firstName}\\s+${lastNameHyphenated}`;
+  const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  const nameParts = [
+    member.firstName,
+    member.lastName.replace(/[-\s]/g, '[-\\s]?'),  // Allow optional hyphen/space
+  ].filter(Boolean);
+
+  // Construct regex for ordered matching: \bWord\b.*?\bWord\b...
+  const orderedNamePattern = nameParts
+    .map(part => `\\b${escapeRegex(part)}\\b`)
+    .join('.*?');
+
+  const diacriticPattern = removeDiacritics_(orderedNamePattern);
 
   const searchTerms = [
-    fullName,
-    removeDiacritics_(fullName),
+    orderedNamePattern,
+    diacriticPattern,
     member.email,
-  ].filter(Boolean); // Removes undefined, null, or empty strings
+  ].filter(Boolean);
 
   return searchTerms;
 }

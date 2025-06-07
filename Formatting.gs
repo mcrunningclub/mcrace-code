@@ -43,7 +43,6 @@ function removeDiacritics_(str) {
  * @date  Apr 21, 2025
  * @update  May 23, 2025
  */
-
 function formatSpecificColumns() {
   const sheet = GET_REGISTRATION_SHEET_();
 
@@ -96,7 +95,6 @@ function formatSpecificColumns() {
  * @date  Apr 23, 2025
  * @update  May 23, 2025
  */
-
 function addMissingCheckboxes_(sheet = GET_REGISTRATION_SHEET_()) {
   const lastRow = getLastRowInReg_();
   const numRows = lastRow - 1;    // Remove header

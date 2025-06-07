@@ -41,7 +41,6 @@ function getLastRowInReg_() {
  * @date  Apr 21, 2025
  * @update  Apr 23, 2025
  */
-
 function onNewRegistration_({ newRow: row, member: memberArr }) {
   const paymentInfo = extractPaymentInfo_(memberArr);
   checkAndSetPayment(row, paymentInfo);
@@ -61,7 +60,6 @@ function onNewRegistration_({ newRow: row, member: memberArr }) {
  * @date  Apr 21, 2025
  * @update  May 23, 2025
  */
-
 function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
   const entries = Object.entries(COL_MAP);
@@ -103,10 +101,9 @@ function addNewRegistration_(registrationObj) {
  * @returns {Member}  A Member object containing the payment information.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date Apr 21, 2025
- * @update Apr 23, 2025
+ * @date  Apr 21, 2025
+ * @update  Apr 23, 2025
  */
-
 function extractPaymentInfo_(memberArr) {
   const getValue = (index) => memberArr[index];
 
@@ -140,7 +137,6 @@ function extractPaymentInfo_(memberArr) {
  * @date  Apr 21, 2025
  * @update  May 23, 2025
  */
-
 function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet_(row)) {
 // Find member transaction using packaged info (name, payment method, ...)
   const isFound = checkPayment_(feeDetails);
@@ -165,26 +161,6 @@ function extractFromSheet_(row) {
 }
 
 
-/**
- * Returns a packaged obj to use as test.
- */
-
-function createTestObj_(row) {
-  const val = GET_REGISTRATION_SHEET_().getSheetValues(row, 1, 1, 19)[0];
-  const entries = Object.entries(COL_MAP);
-
-  const obj = entries.reduce((acc, [key, i]) => {
-    if (i < val.length) {
-      acc[key] = val[i];
-    }
-    return acc;
-  }, {});
-
-  console.log(obj);
-  return obj;
-}
-
-
 function test() {
   //addTriggerForNewRegistration_(4);
   //createPostTemplate();
@@ -197,5 +173,20 @@ function test() {
     }, "");
 
     console.log(str);
+  }
+
+  function createTestObj_(row) {
+    const val = GET_REGISTRATION_SHEET_().getSheetValues(row, 1, 1, 19)[0];
+    const entries = Object.entries(COL_MAP);
+
+    const obj = entries.reduce((acc, [key, i]) => {
+      if (i < val.length) {
+        acc[key] = val[i];
+      }
+      return acc;
+    }, {});
+
+    console.log(obj);
+    return obj;
   }
 }

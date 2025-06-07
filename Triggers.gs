@@ -35,7 +35,6 @@ const TRIGGER_FREQUENCY = 5;  // Minutes
  * @date  May 20, 2025
  * @update  May 23, 2025
  */
-
 function createNewFeeTrigger_(row, feeDetails) {
   const scriptProperties = PropertiesService.getScriptProperties();
 
@@ -69,14 +68,13 @@ function createNewFeeTrigger_(row, feeDetails) {
  * 
  * @trigger Time-based trigger.
  * 
- * @see createNewFeeTrigger_
- * @see notifyUnidentifiedPayment_
+ * @see createNewFeeTrigger
+ * @see notifyUnidentifiedPayment
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  May 20, 2025
  * @update  May 23, 2025
  */
-
 function runFeeChecker() {
   const scriptProperties = PropertiesService.getScriptProperties();
   const allProps = scriptProperties.getProperties();
