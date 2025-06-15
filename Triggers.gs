@@ -108,11 +108,10 @@ function runFeeChecker() {
    * @param {integer} memberRow  The row number in the `Registration` sheet for the member.
    * @returns {boolean}  True if the payment is confirmed, otherwise false.
    */
-  function isPaymentFound(memberRow) {
+  function isPaymentFound(memberRow = 34) {
     const sheet = GET_REGISTRATION_SHEET_();
     const confirmedCol = COL_MAP.paymentConfirmed + 1;
-    const currentFeeValue = sheet.getRange(memberRow, confirmedCol).getValue().toString();
-    return currentFeeValue.trim() == true;
+    return sheet.getRange(memberRow, confirmedCol).getValue();    // Bool value
   }
 
   /**

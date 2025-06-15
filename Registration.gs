@@ -64,21 +64,21 @@ function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
   const entries = Object.entries(COL_MAP);
 
-// Push values to respective index using key-index mapping
+  // Push values to respective index using key-index mapping
   const formatted = entries.reduce((acc, [key, i]) => {
     acc[i] = format(key);
     return acc;
   }, new Array(entries.length));
 
-// Set formatted values in registration sheet
+  // Set formatted values in registration sheet
   const newRow = getLastRowInReg_() + 1;
   sheet.getRange(newRow, 1, 1, formatted.length).setValues([formatted]);
 
-// Return GSheet row and values for payment
+  // Return GSheet row and values for payment
   Logger.log(`Set following values in Registrations (row ${newRow}): ${formatted}`);
   return { newRow, member: formatted };
 
-/** Helper functions */
+  /** Helper functions */
   function format(key) {
     if (key === 'submissionTime') {
       return formatTimestamp(registrationObj?.[key]);
@@ -138,7 +138,7 @@ function extractPaymentInfo_(memberArr) {
  * @update  May 23, 2025
  */
 function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet_(row)) {
-// Find member transaction using packaged info (name, payment method, ...)
+  // Find member transaction using packaged info (name, payment method, ...)
   const isFound = checkPayment_(feeDetails);
   if (isFound) {
     setFeePaid_(row);

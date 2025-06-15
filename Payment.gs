@@ -136,7 +136,8 @@ function setFeePaid_(row) {
 /**
  * Creates search terms for regex matching using a member's information.
  * 
- * Handles hyphenated last names and removes diacritics for better matching.
+ * Handles optional hyphens/spaces in last names, and removes diacritics for better matching.
+ * Improves matching accuracy in `matchMemberInPaymentEmail`.
  * 
  * @param {Member} member  The member's information.
  * @returns {string[]}  An array of search terms for regex matching.
