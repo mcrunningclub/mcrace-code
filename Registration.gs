@@ -58,7 +58,7 @@ function onNewRegistration_({ newRow: row, member: memberArr }) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  May 23, 2025
+ * @update  Aug 22, 2025
  */
 function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
@@ -83,6 +83,9 @@ function addNewRegistration_(registrationObj) {
     if (key === 'submissionTime') {
       return formatTimestamp(registrationObj?.[key]);
     }
+    else if (key === 'paymentAmount') {
+      return validatePaymentAmount(key);
+    }
     const val = registrationObj?.[key] ?? '';   // Prevent storing undefined
     return (typeof val === "string" ? val.trim() : val);
   }
@@ -90,6 +93,11 @@ function addNewRegistration_(registrationObj) {
   function formatTimestamp(raw) {
     const timestamp = new Date(raw);
     return Utilities.formatDate(timestamp, TIMEZONE, 'yyyy-MM-dd HH:mm:ss');
+  }
+
+  // Stripe amount may differ due to coupons
+  function validatePaymentAmount(key) {
+    return registrationObj?.['stripeAmount'] || registrationObj?.[key];
   }
 }
 
@@ -164,6 +172,8 @@ function extractFromSheet_(row) {
 function test() {
   //addTriggerForNewRegistration_(4);
   //createPostTemplate();
+
+  processLastImport(101);
 
   function createPostTemplate() {
     const keys = Object.keys(COL_MAP);

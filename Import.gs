@@ -29,7 +29,8 @@ function appendToImport(reg) {
     const importSheet = GET_IMPORT_SHEET_();
     importSheet.appendRow([reg]);
     return importSheet.getLastRow();
-  } catch (error) {
+
+  } catch(error) {
     Logger.log(`Error appending to import sheet: ${error.message}`);
     throw new Error('Failed to append registration to import sheet.');
   }
@@ -43,12 +44,10 @@ function appendToImport(reg) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 23, 2025
- * @update  Apr 23, 2025
+ * @update  Aug 22, 2025
  */
-function processLastImport() {
+function processLastImport(targetRow) {
   const sheet = GET_IMPORT_SHEET_();
-  const targetRow = getNextRowInQueue_();
-
   if (!targetRow) throw Error('Invalid target row in Import to process!');
 
   // STEP 1 : Get value of last import

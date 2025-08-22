@@ -50,17 +50,18 @@ const COL_MAP = {
   level: 9,
   isMember: 10,
   school: 11,
-  signature: 12,
-  signatureDate: 13,
-  guardianSignature: 14,
-  guardianDate: 15,
-  paymentMethod: 16,
-  comments: 17,
-  paymentAmount: 18,
+  team: 12,
+  signature: 13,
+  signatureDate: 14,
+  guardianSignature: 15,
+  guardianDate: 16,
+  paymentMethod: 17,
+  comments: 18,
+  paymentAmount: 19,
   /** COLUMNS NOT IN POST DATA */
-  paymentConfirmed: 19,
-  paymentDate: 20,
-  emailLog: 21,
+  paymentConfirmed: 20,
+  paymentDate: 21,
+  emailLog: 22,
 }
 
 

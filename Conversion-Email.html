@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml" lang="en" xml:lang="en"
+  xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>
+    McRace Puzzle
+  </title>
+  <style>
+    * {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 16px;
+    }
+
+    .result {
+      margin: 60px 0;
+    }
+
+    h2 {
+      font-size: 30px;
+      text-align: left;
+      margin: 10px 0;
+    }
+
+    input {
+      display: none;
+    }
+
+    label {
+      cursor: pointer;
+      width: 43px;
+      height: 38px;
+      display: inline-block;
+      background: #D3D6DA;
+      text-transform: uppercase;
+      border-radius: 4px;
+      font-weight: bold;
+      text-align: center;
+      padding-top: 20px;
+      margin: 0 6px 8px 0;
+    }
+
+    .frame {
+      padding: 0 0 20px;
+      max-width: 360px;
+    }
+
+    .frame div {
+      width: 62px;
+      height: 42px;
+      padding-top: 20px;
+      display: inline-block;
+      border: 2px solid #D3D6DA;
+      margin: 0 6px 4px 0;
+      vertical-align: top;
+      font-size: 20px;
+      color: #fff
+    }
+
+    [class^="letter"] {
+      display: none;
+    }
+
+    .letter1 {
+      display: block
+    }
+
+    .frame {
+      --a1: ;
+      --a2: ;
+      --a3: ;
+      --a4: ;
+      --a5: ;
+    }
+
+    .a1::after {
+      content: var(--a1);
+    }
+
+    .a2::after {
+      content: var(--a2);
+    }
+
+    .a3::after {
+      content: var(--a3);
+    }
+
+    .a4::after {
+      content: var(--a4);
+    }
+
+    .a5::after {
+      content: var(--a5);
+    }
+
+    #q:checked~* .frame {
+      --a1: "Q";
+    }
+
+    #w:checked~* .frame {
+      --a1: "W";
+    }
+
+    #e:checked~* .frame {
+      --a1: "E";
+    }
+
+    #r:checked~* .frame {
+      --a1: "R";
+    }
+
+    #t:checked~* .frame {
+      --a1: "T";
+    }
+
+    #y:checked~* .frame {
+      --a1: "Y";
+    }
+
+    #u:checked~* .frame {
+      --a1: "U";
+    }
+
+    #i:checked~* .frame {
+      --a1: "I";
+    }
+
+    #o:checked~* .frame {
+      --a1: "O";
+    }
+
+    #p:checked~* .frame {
+      --a1: "P";
+    }
+
+    #a:checked~* .frame {
+      --a1: "A";
+    }
+
+    #s:checked~* .frame {
+      --a1: "S";
+    }
+
+    #d:checked~* .frame {
+      --a1: "D";
+    }
+
+    #f:checked~* .frame {
+      --a1: "F";
+    }
+
+    #g:checked~* .frame {
+      --a1: "G";
+    }
+
+    #h:checked~* .frame {
+      --a1: "H";
+    }
+
+    #j:checked~* .frame {
+      --a1: "J";
+    }
+
+    #k:checked~* .frame {
+      --a1: "K";
+    }
+
+    #l:checked~* .frame {
+      --a1: "L";
+    }
+
+    #z:checked~* .frame {
+      --a1: "Z";
+    }
+
+    #x:checked~* .frame {
+      --a1: "X";
+    }
+
+    #c:checked~* .frame {
+      --a1: "C";
+    }
+
+    #v:checked~* .frame {
+      --a1: "V";
+    }
+
+    #b:checked~* .frame {
+      --a1: "B";
+    }
+
+    #n:checked~* .frame {
+      --a1: "N";
+    }
+
+    #m:checked~* .frame {
+      --a1: "M";
+    }
+
+    #e:checked~* .a1 {
+      background: #6AAA64;
+      border: 2px solid #6AAA64;
+    }
+
+    #q:checked~* .a1,
+    #w:checked~* .a1,
+    #r:checked~* .a1,
+    #t:checked~* .a1,
+    #y:checked~* .a1,
+    #u:checked~* .a1,
+    #o:checked~* .a1,
+    #p:checked~* .a1,
+    #s:checked~* .a1,
+    #d:checked~* .a1,
+    #f:checked~* .a1,
+    #g:checked~* .a1,
+    #h:checked~* .a1,
+    #j:checked~* .a1,
+    #k:checked~* .a1,
+    #z:checked~* .a1,
+    #x:checked~* .a1,
+    #c:checked~* .a1,
+    #v:checked~* .a1,
+    #b:checked~* .a1,
+    #n:checked~* .a1 {
+      background: #787C7E;
+      border: 2px solid #787C7E;
+    }
+
+    #a:checked~* .a1,
+    #i:checked~* .a1,
+    #m:checked~* .a1,
+    #l:checked~* .a1 {
+      background: #C9B458;
+      border: 2px solid #C9B458;
+    }
+
+    #q:checked~* .letter1,
+    #w:checked~* .letter1,
+    #e:checked~* .letter1,
+    #r:checked~* .letter1,
+    #t:checked~* .letter1,
+    #y:checked~* .letter1,
+    #u:checked~* .letter1,
+    #i:checked~* .letter1,
+    #o:checked~* .letter1,
+    #p:checked~* .letter1,
+    #a:checked~* .letter1,
+    #s:checked~* .letter1,
+    #d:checked~* .letter1,
+    #f:checked~* .letter1,
+    #g:checked~* .letter1,
+    #h:checked~* .letter1,
+    #j:checked~* .letter1,
+    #k:checked~* .letter1,
+    #l:checked~* .letter1,
+    #z:checked~* .letter1,
+    #x:checked~* .letter1,
+    #c:checked~* .letter1,
+    #v:checked~* .letter1,
+    #b:checked~* .letter1,
+    #n:checked~* .letter1,
+    #m:checked~* .letter1 {
+      display: none
+    }
+
+    #q:checked~* .letter2,
+    #w:checked~* .letter2,
+    #e:checked~* .letter2,
+    #r:checked~* .letter2,
+    #t:checked~* .letter2,
+    #y:checked~* .letter2,
+    #u:checked~* .letter2,
+    #i:checked~* .letter2,
+    #o:checked~* .letter2,
+    #p:checked~* .letter2,
+    #a:checked~* .letter2,
+    #s:checked~* .letter2,
+    #d:checked~* .letter2,
+    #f:checked~* .letter2,
+    #g:checked~* .letter2,
+    #h:checked~* .letter2,
+    #j:checked~* .letter2,
+    #k:checked~* .letter2,
+    #l:checked~* .letter2,
+    #z:checked~* .letter2,
+    #x:checked~* .letter2,
+    #c:checked~* .letter2,
+    #v:checked~* .letter2,
+    #b:checked~* .letter2,
+    #n:checked~* .letter2,
+    #m:checked~* .letter2 {
+      display: block
+    }
+
+    #m2:checked~* .a2 {
+      background: #6AAA64;
+      border: 2px solid #6AAA64;
+    }
+
+    #q2:checked~* .a2,
+    #w2:checked~* .a2,
+    #r2:checked~* .a2,
+    #t2:checked~* .a2,
+    #y2:checked~* .a2,
+    #u2:checked~* .a2,
+    #o2:checked~* .a2,
+    #p2:checked~* .a2,
+    #s2:checked~* .a2,
+    #d2:checked~* .a2,
+    #f2:checked~* .a2,
+    #g2:checked~* .a2,
+    #h2:checked~* .a2,
+    #j2:checked~* .a2,
+    #k2:checked~* .a2,
+    #z2:checked~* .a2,
+    #x2:checked~* .a2,
+    #c2:checked~* .a2,
+    #v2:checked~* .a2,
+    #b2:checked~* .a2,
+    #n2:checked~* .a2 {
+      background: #787C7E;
+      border: 2px solid #787C7E;
+    }
+
+    #e2:checked~* .a2,
+    #a2:checked~* .a2,
+    #i2:checked~* .a2,
+    #l2:checked~* .a2 {
+      background: #C9B458;
+      border: 2px solid #C9B458;
+    }
+
+    #q2:checked~* .letter2,
+    #w2:checked~* .letter2,
+    #e2:checked~* .letter2,
+    #r2:checked~* .letter2,
+    #t2:checked~* .letter2,
+    #y2:checked~* .letter2,
+    #u2:checked~* .letter2,
+    #i2:checked~* .letter2,
+    #o2:checked~* .letter2,
+    #p2:checked~* .letter2,
+    #a2:checked~* .letter2,
+    #s2:checked~* .letter2,
+    #d2:checked~* .letter2,
+    #f2:checked~* .letter2,
+    #g2:checked~* .letter2,
+    #h2:checked~* .letter2,
+    #j2:checked~* .letter2,
+    #k2:checked~* .letter2,
+    #l2:checked~* .letter2,
+    #z2:checked~* .letter2,
+    #x2:checked~* .letter2,
+    #c2:checked~* .letter2,
+    #v2:checked~* .letter2,
+    #b2:checked~* .letter2,
+    #n2:checked~* .letter2,
+    #m2:checked~* .letter2 {
+      display: none
+    }
+
+    #q2:checked~* .letter3,
+    #w2:checked~* .letter3,
+    #e2:checked~* .letter3,
+    #r2:checked~* .letter3,
+    #t2:checked~* .letter3,
+    #y2:checked~* .letter3,
+    #u2:checked~* .letter3,
+    #i2:checked~* .letter3,
+    #o2:checked~* .letter3,
+    #p2:checked~* .letter3,
+    #a2:checked~* .letter3,
+    #s2:checked~* .letter3,
+    #d2:checked~* .letter3,
+    #f2:checked~* .letter3,
+    #g2:checked~* .letter3,
+    #h2:checked~* .letter3,
+    #j2:checked~* .letter3,
+    #k2:checked~* .letter3,
+    #l2:checked~* .letter3,
+    #z2:checked~* .letter3,
+    #x2:checked~* .letter3,
+    #c2:checked~* .letter3,
+    #v2:checked~* .letter3,
+    #b2:checked~* .letter3,
+    #n2:checked~* .letter3,
+    #m2:checked~* .letter3 {
+      display: block
+    }
+
+    #a3:checked~* .a3 {
+      background: #6AAA64;
+      border: 2px solid #6AAA64;
+    }
+
+    #q3:checked~* .a3,
+    #w3:checked~* .a3,
+    #r3:checked~* .a3,
+    #t3:checked~* .a3,
+    #y3:checked~* .a3,
+    #u3:checked~* .a3,
+    #i3:checked~* .a3,
+    #o3:checked~* .a3,
+    #p3:checked~* .a3,
+    #s3:checked~* .a3,
+    #d3:checked~* .a3,
+    #f3:checked~* .a3,
+    #g3:checked~* .a3,
+    #h3:checked~* .a3,
+    #j3:checked~* .a3,
+    #k3:checked~* .a3,
+    #z3:checked~* .a3,
+    #x3:checked~* .a3,
+    #c3:checked~* .a3,
+    #v3:checked~* .a3,
+    #b3:checked~* .a3,
+    #n3:checked~* .a3 {
+      background: #787C7E;
+      border: 2px solid #787C7E;
+    }
+
+    #e3:checked~* .a3,
+    #m3:checked~* .a3,
+    #i3:checked~* .a3,
+    #l3:checked~* .a3 {
+      background: #C9B458;
+      border: 2px solid #C9B458;
+    }
+
+    #q3:checked~* .letter3,
+    #w3:checked~* .letter3,
+    #e3:checked~* .letter3,
+    #r3:checked~* .letter3,
+    #t3:checked~* .letter3,
+    #y3:checked~* .letter3,
+    #u3:checked~* .letter3,
+    #i3:checked~* .letter3,
+    #o3:checked~* .letter3,
+    #p3:checked~* .letter3,
+    #a3:checked~* .letter3,
+    #s3:checked~* .letter3,
+    #d3:checked~* .letter3,
+    #f3:checked~* .letter3,
+    #g3:checked~* .letter3,
+    #h3:checked~* .letter3,
+    #j3:checked~* .letter3,
+    #k3:checked~* .letter3,
+    #l3:checked~* .letter3,
+    #z3:checked~* .letter3,
+    #x3:checked~* .letter3,
+    #c3:checked~* .letter3,
+    #v3:checked~* .letter3,
+    #b3:checked~* .letter3,
+    #n3:checked~* .letter3,
+    #m3:checked~* .letter3 {
+      display: none
+    }
+
+    #q3:checked~* .letter4,
+    #w3:checked~* .letter4,
+    #e3:checked~* .letter4,
+    #r3:checked~* .letter4,
+    #t3:checked~* .letter4,
+    #y3:checked~* .letter4,
+    #u3:checked~* .letter4,
+    #i3:checked~* .letter4,
+    #o3:checked~* .letter4,
+    #p3:checked~* .letter4,
+    #a3:checked~* .letter4,
+    #s3:checked~* .letter4,
+    #d3:checked~* .letter4,
+    #f3:checked~* .letter4,
+    #g3:checked~* .letter4,
+    #h3:checked~* .letter4,
+    #j3:checked~* .letter4,
+    #k3:checked~* .letter4,
+    #l3:checked~* .letter4,
+    #z3:checked~* .letter4,
+    #x3:checked~* .letter4,
+    #c3:checked~* .letter4,
+    #v3:checked~* .letter4,
+    #b3:checked~* .letter4,
+    #n3:checked~* .letter4,
+    #m3:checked~* .letter4 {
+      display: block
+    }
+
+    #i4:checked~* .a4 {
+      background: #6AAA64;
+      border: 2px solid #6AAA64;
+    }
+
+    #q4:checked~* .a4,
+    #w4:checked~* .a4,
+    #r4:checked~* .a4,
+    #t4:checked~* .a4,
+    #y4:checked~* .a4,
+    #u4:checked~* .a4,
+    #o4:checked~* .a4,
+    #p4:checked~* .a4,
+    #s4:checked~* .a4,
+    #d4:checked~* .a4,
+    #f4:checked~* .a4,
+    #g4:checked~* .a4,
+    #h4:checked~* .a4,
+    #j4:checked~* .a4,
+    #k4:checked~* .a4,
+    #z4:checked~* .a4,
+    #x4:checked~* .a4,
+    #c4:checked~* .a4,
+    #v4:checked~* .a4,
+    #b4:checked~* .a4,
+    #n4:checked~* .a4 {
+      background: #787C7E;
+      border: 2px solid #787C7E;
+    }
+
+    #e4:checked~* .a4,
+    #m4:checked~* .a4,
+    #a4:checked~* .a4,
+    #l4:checked~* .a4 {
+      background: #C9B458;
+      border: 2px solid #C9B458;
+    }
+
+    #q4:checked~* .letter4,
+    #w4:checked~* .letter4,
+    #e4:checked~* .letter4,
+    #r4:checked~* .letter4,
+    #t4:checked~* .letter4,
+    #y4:checked~* .letter4,
+    #u4:checked~* .letter4,
+    #i4:checked~* .letter4,
+    #o4:checked~* .letter4,
+    #p4:checked~* .letter4,
+    #a4:checked~* .letter4,
+    #s4:checked~* .letter4,
+    #d4:checked~* .letter4,
+    #f4:checked~* .letter4,
+    #g4:checked~* .letter4,
+    #h4:checked~* .letter4,
+    #j4:checked~* .letter4,
+    #k4:checked~* .letter4,
+    #l4:checked~* .letter4,
+    #z4:checked~* .letter4,
+    #x4:checked~* .letter4,
+    #c4:checked~* .letter4,
+    #v4:checked~* .letter4,
+    #b4:checked~* .letter4,
+    #n4:checked~* .letter4,
+    #m4:checked~* .letter4 {
+      display: none
+    }
+
+    #q4:checked~* .letter5,
+    #w4:checked~* .letter5,
+    #e4:checked~* .letter5,
+    #r4:checked~* .letter5,
+    #t4:checked~* .letter5,
+    #y4:checked~* .letter5,
+    #u4:checked~* .letter5,
+    #i4:checked~* .letter5,
+    #o4:checked~* .letter5,
+    #p4:checked~* .letter5,
+    #a4:checked~* .letter5,
+    #s4:checked~* .letter5,
+    #d4:checked~* .letter5,
+    #f4:checked~* .letter5,
+    #g4:checked~* .letter5,
+    #h4:checked~* .letter5,
+    #j4:checked~* .letter5,
+    #k4:checked~* .letter5,
+    #l4:checked~* .letter5,
+    #z4:checked~* .letter5,
+    #x4:checked~* .letter5,
+    #c4:checked~* .letter5,
+    #v4:checked~* .letter5,
+    #b4:checked~* .letter5,
+    #n4:checked~* .letter5,
+    #m4:checked~* .letter5 {
+      display: block
+    }
+
+    #l5:checked~* .a5 {
+      background: #6AAA64;
+      border: 2px solid #6AAA64;
+    }
+
+    #q5:checked~* .a5,
+    #w5:checked~* .a5,
+    #r5:checked~* .a5,
+    #t5:checked~* .a5,
+    #y5:checked~* .a5,
+    #u5:checked~* .a5,
+    #o5:checked~* .a5,
+    #p5:checked~* .a5,
+    #s5:checked~* .a5,
+    #d5:checked~* .a5,
+    #f5:checked~* .a5,
+    #g5:checked~* .a5,
+    #h5:checked~* .a5,
+    #j5:checked~* .a5,
+    #k5:checked~* .a5,
+    #z5:checked~* .a5,
+    #x5:checked~* .a5,
+    #c5:checked~* .a5,
+    #v5:checked~* .a5,
+    #b5:checked~* .a5,
+    #n5:checked~* .a5 {
+      background: #787C7E;
+      border: 2px solid #787C7E;
+    }
+
+
+    /* CHECKED LETTERS */
+    #e5:checked~* .a5,
+    #m5:checked~* .a5,
+    #a5:checked~* .a5,
+    #i5:checked~* .a5 {
+      background: #C9B458;
+      border: 2px solid #C9B458;
+    }
+
+    /* RESULT ONCE ALL CHECKED */
+    #e:checked~#m2:checked~#a3:checked~#i4:checked~#l5:checked~.result {
+      background: url(http://i1.cmail19.com/ei/j/E3/E89/397/000234/csimport/blobparty_0.gif);
+      background-repeat: round;
+    }
+
+    #q2:checked~* .frame {
+      --a2: "Q";
+    }
+
+    #w2:checked~* .frame {
+      --a2: "W";
+    }
+
+    #e2:checked~* .frame {
+      --a2: "E";
+    }
+
+    #r2:checked~* .frame {
+      --a2: "R";
+    }
+
+    #t2:checked~* .frame {
+      --a2: "T";
+    }
+
+    #y2:checked~* .frame {
+      --a2: "Y";
+    }
+
+    #u2:checked~* .frame {
+      --a2: "U";
+    }
+
+    #i2:checked~* .frame {
+      --a2: "I";
+    }
+
+    #o2:checked~* .frame {
+      --a2: "O";
+    }
+
+    #p2:checked~* .frame {
+      --a2: "P";
+    }
+
+    #a2:checked~* .frame {
+      --a2: "A";
+    }
+
+    #s2:checked~* .frame {
+      --a2: "S";
+    }
+
+    #d2:checked~* .frame {
+      --a2: "D";
+    }
+
+    #f2:checked~* .frame {
+      --a2: "F";
+    }
+
+    #g2:checked~* .frame {
+      --a2: "G";
+    }
+
+    #h2:checked~* .frame {
+      --a2: "H";
+    }
+
+    #j2:checked~* .frame {
+      --a2: "J";
+    }
+
+    #k2:checked~* .frame {
+      --a2: "K";
+    }
+
+    #l2:checked~* .frame {
+      --a2: "L";
+    }
+
+    #z2:checked~* .frame {
+      --a2: "Z";
+    }
+
+    #x2:checked~* .frame {
+      --a2: "X";
+    }
+
+    #c2:checked~* .frame {
+      --a2: "C";
+    }
+
+    #v2:checked~* .frame {
+      --a2: "V";
+    }
+
+    #b2:checked~* .frame {
+      --a2: "B";
+    }
+
+    #n2:checked~* .frame {
+      --a2: "N";
+    }
+
+    #m2:checked~* .frame {
+      --a2: "M";
+    }
+
+    #q3:checked~* .frame {
+      --a3: "Q";
+    }
+
+    #w3:checked~* .frame {
+      --a3: "W";
+    }
+
+    #e3:checked~* .frame {
+      --a3: "E";
+    }
+
+    #r3:checked~* .frame {
+      --a3: "R";
+    }
+
+    #t3:checked~* .frame {
+      --a3: "T";
+    }
+
+    #y3:checked~* .frame {
+      --a3: "Y";
+    }
+
+    #u3:checked~* .frame {
+      --a3: "U";
+    }
+
+    #i3:checked~* .frame {
+      --a3: "I";
+    }
+
+    #o3:checked~* .frame {
+      --a3: "O";
+    }
+
+    #p3:checked~* .frame {
+      --a3: "P";
+    }
+
+    #a3:checked~* .frame {
+      --a3: "A";
+    }
+
+    #s3:checked~* .frame {
+      --a3: "S";
+    }
+
+    #d3:checked~* .frame {
+      --a3: "D";
+    }
+
+    #f3:checked~* .frame {
+      --a3: "F";
+    }
+
+    #g3:checked~* .frame {
+      --a3: "G";
+    }
+
+    #h3:checked~* .frame {
+      --a3: "H";
+    }
+
+    #j3:checked~* .frame {
+      --a3: "J";
+    }
+
+    #k3:checked~* .frame {
+      --a3: "K";
+    }
+
+    #l3:checked~* .frame {
+      --a3: "L";
+    }
+
+    #z3:checked~* .frame {
+      --a3: "Z";
+    }
+
+    #x3:checked~* .frame {
+      --a3: "X";
+    }
+
+    #c3:checked~* .frame {
+      --a3: "C";
+    }
+
+    #v3:checked~* .frame {
+      --a3: "V";
+    }
+
+    #b3:checked~* .frame {
+      --a3: "B";
+    }
+
+    #n3:checked~* .frame {
+      --a3: "N";
+    }
+
+    #m3:checked~* .frame {
+      --a3: "M";
+    }
+
+    #q4:checked~* .frame {
+      --a4: "Q";
+    }
+
+    #w4:checked~* .frame {
+      --a4: "W";
+    }
+
+    #e4:checked~* .frame {
+      --a4: "E";
+    }
+
+    #r4:checked~* .frame {
+      --a4: "R";
+    }
+
+    #t4:checked~* .frame {
+      --a4: "T";
+    }
+
+    #y4:checked~* .frame {
+      --a4: "Y";
+    }
+
+    #u4:checked~* .frame {
+      --a4: "U";
+    }
+
+    #i4:checked~* .frame {
+      --a4: "I";
+    }
+
+    #o4:checked~* .frame {
+      --a4: "O";
+    }
+
+    #p4:checked~* .frame {
+      --a4: "P";
+    }
+
+    #a4:checked~* .frame {
+      --a4: "A";
+    }
+
+    #s4:checked~* .frame {
+      --a4: "S";
+    }
+
+    #d4:checked~* .frame {
+      --a4: "D";
+    }
+
+    #f4:checked~* .frame {
+      --a4: "F";
+    }
+
+    #g4:checked~* .frame {
+      --a4: "G";
+    }
+
+    #h4:checked~* .frame {
+      --a4: "H";
+    }
+
+    #j4:checked~* .frame {
+      --a4: "J";
+    }
+
+    #k4:checked~* .frame {
+      --a4: "K";
+    }
+
+    #l4:checked~* .frame {
+      --a4: "L";
+    }
+
+    #z4:checked~* .frame {
+      --a4: "Z";
+    }
+
+    #x4:checked~* .frame {
+      --a4: "X";
+    }
+
+    #c4:checked~* .frame {
+      --a4: "C";
+    }
+
+    #v4:checked~* .frame {
+      --a4: "V";
+    }
+
+    #b4:checked~* .frame {
+      --a4: "B";
+    }
+
+    #n4:checked~* .frame {
+      --a4: "N";
+    }
+
+    #m4:checked~* .frame {
+      --a4: "M";
+    }
+
+    #q5:checked~* .frame {
+      --a5: "Q";
+    }
+
+    #w5:checked~* .frame {
+      --a5: "W";
+    }
+
+    #e5:checked~* .frame {
+      --a5: "E";
+    }
+
+    #r5:checked~* .frame {
+      --a5: "R";
+    }
+
+    #t5:checked~* .frame {
+      --a5: "T";
+    }
+
+    #y5:checked~* .frame {
+      --a5: "Y";
+    }
+
+    #u5:checked~* .frame {
+      --a5: "U";
+    }
+
+    #i5:checked~* .frame {
+      --a5: "I";
+    }
+
+    #o5:checked~* .frame {
+      --a5: "O";
+    }
+
+    #p5:checked~* .frame {
+      --a5: "P";
+    }
+
+    #a5:checked~* .frame {
+      --a5: "A";
+    }
+
+    #s5:checked~* .frame {
+      --a5: "S";
+    }
+
+    #d5:checked~* .frame {
+      --a5: "D";
+    }
+
+    #f5:checked~* .frame {
+      --a5: "F";
+    }
+
+    #g5:checked~* .frame {
+      --a5: "G";
+    }
+
+    #h5:checked~* .frame {
+      --a5: "H";
+    }
+
+    #j5:checked~* .frame {
+      --a5: "J";
+    }
+
+    #k5:checked~* .frame {
+      --a5: "K";
+    }
+
+    #l5:checked~* .frame {
+      --a5: "L";
+    }
+
+    #z5:checked~* .frame {
+      --a5: "Z";
+    }
+
+    #x5:checked~* .frame {
+      --a5: "X";
+    }
+
+    #c5:checked~* .frame {
+      --a5: "C";
+    }
+
+    #v5:checked~* .frame {
+      --a5: "V";
+    }
+
+    #b5:checked~* .frame {
+      --a5: "B";
+    }
+
+    #n5:checked~* .frame {
+      --a5: "N";
+    }
+
+    #m5:checked~* .frame {
+      --a5: "M";
+    }
+
+    @media screen and (max-width:560px) {
+      .nomob {
+        display: none
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 40px;
+        ;
+      }
+
+      label {
+        width: 63px;
+        height: 38px;
+        padding-top: 20px;
+        margin: 0 6px 8px 0;
+      }
+
+      .frame div {
+        width: 42px;
+        height: 42px;
+        padding-top: 20px;
+        margin: 0 6px 4px 0;
+        vertical-align: top;
+        font-size: 20px;
+        color: #fff
+      }
+
+      .result {
+        margin: 20px;
+      }
+    }
+  </style>
+  <style>
+    @supports(--css: variables) {
+      .fallback {
+        display: none
+      }
+
+      .wordle {
+        display: block !important;
+      }
+    }
+  </style>
+  <style>
+    @media screen and (max-width:700px) {
+      .w100pc {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 1000px !important;
+        height: auto !important;
+      }
+    }
+  </style>
+  <!--[if gte mso 9]>
+<xml>
+<o:OfficeDocumentSettings>
+<o:PixelsPerInch>96</o:PixelsPerInch>
+</o:OfficeDocumentSettings>
+</xml>
+<![endif]-->
+  <script type="application/ld+json">
+    [{ "@context": "http://schema.org/", "@type": "Organization", "name": "ActionRocket", // If showing a logo, we recommend using an https URL. // It's not a requirement today, but may be in the future. "logo": "https://arcdn.net/ActionRocket/emailweekly/cdn/misc-images/gmail-logo.png" }, { "@context": "http://schema.org/", "@type": "EmailMessage", // Alternative subject line, coming soon. "subjectLine": "&lt;content replace=" Wordle in email!" style=" display: none; "&gt;&lt;/content&gt;" }, { // Promotion card with single image. // We recommend using an https URL. It's not a requirement today, but may be in the future. // Any image size will work and will just be cropped automatically. // GIF & WEBP images are not supported and will be filtered out. // Sample image is 538x138, 3.9 aspect ratio "@context": "http://schema.org/", "@type": "PromotionCard", "image": "https://arcdn.net/ActionRocket/emailweekly/cdn/misc-images/gmail-preview2.png" }]
+  </script>
+  <!--[if mso]><xml>
+    <w:WordDocument xmlns:w="urn:schemas-microsoft-com:office:word">
+      <w:DontUseAdvancedTypographyReadingMail/>
+    </w:WordDocument>
+    </xml><![endif]-->
+</head>
+
+<body id="body" style="margin:0 !important;padding:0 !important;width:100% !important">
+  <div esd-text="true" class="esd-text"
+    style="height:0;max-height:0;overflow:hidden;font-size:0;mso-hide:all;position:fixed">
+    Five letter word we all love... ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌
+    ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌
+    ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌
+    ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌
+    ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌
+  </div>
+  <div lang="en" role="article" align="center" aria-label="Wordle" aria-roledescription="email" id="links"
+    class="email-container" style="max-width:700px;margin:0 auto">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="width:100%;background:#000">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="320" border="0" cellpadding="0" cellspacing="0"
+            style="width:320px;background:#000">
+            <tr>
+              <td esd-text="true" align="center" class="esd-text" style="padding:20px">
+                <br>
+                <h1 style="font-size:30px;color:#fff;margin:20px 0 0">
+                  Did you forget something?
+                </h1>
+                <p style="font-size: 30px; color: #fff; margin: 20px 0 0">
+                  Complete this puzzle and get a surprise!
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <div class="fallback">
+      <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%">
+        <tr>
+          <td align="center">
+            <a href="https://actionrocket.cmail19.com/t/j-e-ziuujhl-xjukuuddk-yu/">
+              <img src="http://i3.cmail19.com/ei/j/E3/E89/397/000234/csimport/wordle_2.jpg" width="700" alt="Wordle in email? - Click to play!" class="w100pc" style="display:block">
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!--[if !mso]>
+<!-- -->
+    <div class="wordle" style="display:none">
+      <form>
+        <input id="q" type="checkbox">
+        <input id="w" type="checkbox">
+        <input id="e" type="checkbox">
+        <input type="checkbox" id="r">
+        <input id="t" type="checkbox">
+        <input id="y" type="checkbox">
+        <input id="u" type="checkbox">
+        <input id="i" type="checkbox">
+        <input type="checkbox" id="o">
+        <input id="p" type="checkbox">
+        <input type="checkbox" id="a">
+        <input id="s" type="checkbox">
+        <input type="checkbox" id="d">
+        <input id="f" type="checkbox">
+        <input id="g" type="checkbox">
+        <input id="h" type="checkbox">
+        <input id="j" type="checkbox">
+        <input type="checkbox" id="k">
+        <input id="l" type="checkbox">
+        <input type="checkbox" id="z">
+        <input type="checkbox" id="x">
+        <input type="checkbox" id="c">
+        <input id="v" type="checkbox">
+        <input id="b" type="checkbox">
+        <input type="checkbox" id="n">
+        <input type="checkbox" id="m">
+        <input id="q2" type="checkbox">
+        <input type="checkbox" id="w2">
+        <input id="e2" type="checkbox">
+        <input id="r2" type="checkbox">
+        <input id="t2" type="checkbox">
+        <input id="y2" type="checkbox">
+        <input id="u2" type="checkbox">
+        <input id="i2" type="checkbox">
+        <input type="checkbox" id="o2">
+        <input id="p2" type="checkbox">
+        <input type="checkbox" id="a2">
+        <input type="checkbox" id="s2">
+        <input type="checkbox" id="d2">
+        <input type="checkbox" id="f2">
+        <input id="g2" type="checkbox">
+        <input id="h2" type="checkbox">
+        <input type="checkbox" id="j2">
+        <input id="k2" type="checkbox">
+        <input type="checkbox" id="l2">
+        <input id="z2" type="checkbox">
+        <input id="x2" type="checkbox">
+        <input type="checkbox" id="c2">
+        <input id="v2" type="checkbox">
+        <input id="b2" type="checkbox">
+        <input type="checkbox" id="n2">
+        <input id="m2" type="checkbox">
+        <input type="checkbox" id="q3">
+        <input id="w3" type="checkbox">
+        <input id="e3" type="checkbox">
+        <input id="r3" type="checkbox">
+        <input id="t3" type="checkbox">
+        <input id="y3" type="checkbox">
+        <input id="u3" type="checkbox">
+        <input id="i3" type="checkbox">
+        <input id="o3" type="checkbox">
+        <input type="checkbox" id="p3">
+        <input id="a3" type="checkbox">
+        <input id="s3" type="checkbox">
+        <input id="d3" type="checkbox">
+        <input id="f3" type="checkbox">
+        <input id="g3" type="checkbox">
+        <input id="h3" type="checkbox">
+        <input id="j3" type="checkbox">
+        <input id="k3" type="checkbox">
+        <input id="l3" type="checkbox">
+        <input id="z3" type="checkbox">
+        <input id="x3" type="checkbox">
+        <input id="c3" type="checkbox">
+        <input id="v3" type="checkbox">
+        <input id="b3" type="checkbox">
+        <input id="n3" type="checkbox">
+        <input id="m3" type="checkbox">
+        <input id="q4" type="checkbox">
+        <input id="w4" type="checkbox">
+        <input id="e4" type="checkbox">
+        <input id="r4" type="checkbox">
+        <input type="checkbox" id="t4">
+        <input id="y4" type="checkbox">
+        <input id="u4" type="checkbox">
+        <input id="i4" type="checkbox">
+        <input id="o4" type="checkbox">
+        <input id="p4" type="checkbox">
+        <input id="a4" type="checkbox">
+        <input id="s4" type="checkbox">
+        <input type="checkbox" id="d4">
+        <input id="f4" type="checkbox">
+        <input id="g4" type="checkbox">
+        <input id="h4" type="checkbox">
+        <input type="checkbox" id="j4">
+        <input type="checkbox" id="k4">
+        <input id="l4" type="checkbox">
+        <input id="z4" type="checkbox">
+        <input id="x4" type="checkbox">
+        <input type="checkbox" id="c4">
+        <input id="v4" type="checkbox">
+        <input id="b4" type="checkbox">
+        <input type="checkbox" id="n4">
+        <input id="m4" type="checkbox">
+        <input type="checkbox" id="q5">
+        <input id="w5" type="checkbox">
+        <input id="e5" type="checkbox">
+        <input type="checkbox" id="r5">
+        <input id="t5" type="checkbox">
+        <input type="checkbox" id="y5">
+        <input id="u5" type="checkbox">
+        <input id="i5" type="checkbox">
+        <input id="o5" type="checkbox">
+        <input id="p5" type="checkbox">
+        <input id="a5" type="checkbox">
+        <input type="checkbox" id="s5">
+        <input type="checkbox" id="d5">
+        <input type="checkbox" id="f5">
+        <input id="g5" type="checkbox">
+        <input id="h5" type="checkbox">
+        <input id="j5" type="checkbox">
+        <input id="k5" type="checkbox">
+        <input id="l5" type="checkbox">
+        <input id="z5" type="checkbox">
+        <input id="x5" type="checkbox">
+        <input type="checkbox" id="c5">
+        <input type="checkbox" id="v5">
+        <input type="checkbox" id="b5">
+        <input id="n5" type="checkbox">
+        <input type="checkbox" id="m5">
+        <input id="reset" type="reset">
+        <div class="result">
+          <div esd-text="true" class="frame esd-text">
+            <h2>
+              We
+              <br>
+                Love
+            </h2>
+            <div class="a1"></div>
+            <div class="a2"></div>
+            <div class="a3"></div>
+            <div class="a4"></div>
+            <div class="a5"></div>
+          </div>
+          <div class="letter1">
+            <label for="q">
+                q
+              </label>
+            <label for="w">
+                w
+              </label>
+            <label for="e">
+                e
+              </label>
+            <label for="r">
+                r
+              </label>
+            <label for="t">
+                t
+              </label>
+            <label for="y">
+                y
+              </label>
+            <label for="u">
+                u
+              </label>
+            <label for="i">
+                i
+              </label>
+            <label for="o">
+                o
+              </label>
+            <label for="p">
+                p
+              </label>
+            <br class="nomob">
+            <label for="a">
+                a
+              </label>
+            <label for="s">
+                s
+              </label>
+            <label for="d">
+                d
+              </label>
+            <label for="f">
+                f
+              </label>
+            <label for="g">
+                g
+              </label>
+            <label for="h">
+                h
+              </label>
+            <label for="j">
+                j
+              </label>
+            <label for="k">
+                k
+              </label>
+            <label for="l">
+                l
+              </label>
+            <br class="nomob">
+            <label for="z">
+                z
+              </label>
+            <label for="x">
+                x
+              </label>
+            <label for="c">
+                c
+              </label>
+            <label for="v">
+                v
+              </label>
+            <label for="b">
+                b
+              </label>
+            <label for="n">
+                n
+              </label>
+            <label for="m">
+                m
+              </label>
+            <br>
+            <label for="reset" style="width:80px">
+                Reset
+              </label>
+          </div>
+          <div class="letter2">
+            <label for="q2">
+                q
+              </label>
+            <label for="w2">
+                w
+              </label>
+            <label for="e2">
+                e
+              </label>
+            <label for="r2">
+                r
+              </label>
+            <label for="t2">
+                t
+              </label>
+            <label for="y2">
+                y
+              </label>
+            <label for="u2">
+                u
+              </label>
+            <label for="i2">
+                i
+              </label>
+            <label for="o2">
+                o
+              </label>
+            <label for="p2">
+                p
+              </label>
+            <br class="nomob">
+            <label for="a2">
+                a
+              </label>
+            <label for="s2">
+                s
+              </label>
+            <label for="d2">
+                d
+              </label>
+            <label for="f2">
+                f
+              </label>
+            <label for="g2">
+                g
+              </label>
+            <label for="h2">
+                h
+              </label>
+            <label for="j2">
+                j
+              </label>
+            <label for="k2">
+                k
+              </label>
+            <label for="l2">
+                l
+              </label>
+            <br class="nomob">
+            <label for="z2">
+                z
+              </label>
+            <label for="x2">
+                x
+              </label>
+            <label for="c2">
+                c
+              </label>
+            <label for="v2">
+                v
+              </label>
+            <label for="b2">
+                b
+              </label>
+            <label for="n2">
+                n
+              </label>
+            <label for="m2">
+                m
+              </label>
+            <br class="nomob">
+            <label for="reset" style="width:80px">
+                Reset
+              </label>
+          </div>
+          <div class="letter3">
+            <label for="q3">
+                q
+              </label>
+            <label for="w3">
+                w
+              </label>
+            <label for="e3">
+                e
+              </label>
+            <label for="r3">
+                r
+              </label>
+            <label for="t3">
+                t
+              </label>
+            <label for="y3">
+                y
+              </label>
+            <label for="u3">
+                u
+              </label>
+            <label for="i3">
+                i
+              </label>
+            <label for="o3">
+                o
+              </label>
+            <label for="p3">
+                p
+              </label>
+            <br class="nomob">
+            <label for="a3">
+                a
+              </label>
+            <label for="s3">
+                s
+              </label>
+            <label for="d3">
+                d
+              </label>
+            <label for="f3">
+                f
+              </label>
+            <label for="g3">
+                g
+              </label>
+            <label for="h3">
+                h
+              </label>
+            <label for="j3">
+                j
+              </label>
+            <label for="k3">
+                k
+              </label>
+            <label for="l3">
+                l
+              </label>
+            <br class="nomob">
+            <label for="z3">
+                z
+              </label>
+            <label for="x3">
+                x
+              </label>
+            <label for="c3">
+                c
+              </label>
+            <label for="v3">
+                v
+              </label>
+            <label for="b3">
+                b
+              </label>
+            <label for="n3">
+                n
+              </label>
+            <label for="m3">
+                m
+              </label>
+            <br class="nomob">
+            <label for="reset" style="width:80px">
+                Reset
+              </label>
+          </div>
+          <div class="letter4">
+            <label for="q4">
+                q
+              </label>
+            <label for="w4">
+                w
+              </label>
+            <label for="e4">
+                e
+              </label>
+            <label for="r4">
+                r
+              </label>
+            <label for="t4">
+                t
+              </label>
+            <label for="y4">
+                y
+              </label>
+            <label for="u4">
+                u
+              </label>
+            <label for="i4">
+                i
+              </label>
+            <label for="o4">
+                o
+              </label>
+            <label for="p4">
+                p
+              </label>
+            <br class="nomob">
+            <label for="a4">
+                a
+              </label>
+            <label for="s4">
+                s
+              </label>
+            <label for="d4">
+                d
+              </label>
+            <label for="f4">
+                f
+              </label>
+            <label for="g4">
+                g
+              </label>
+            <label for="h4">
+                h
+              </label>
+            <label for="j4">
+                j
+              </label>
+            <label for="k4">
+                k
+              </label>
+            <label for="l4">
+                l
+              </label>
+            <br class="nomob">
+            <label for="z4">
+                z
+              </label>
+            <label for="x4">
+                x
+              </label>
+            <label for="c4">
+                c
+              </label>
+            <label for="v4">
+                v
+              </label>
+            <label for="b4">
+                b
+              </label>
+            <label for="n4">
+                n
+              </label>
+            <label for="m4">
+                m
+              </label>
+            <br class="nomob">
+            <label for="reset" style="width:80px">
+                Reset
+              </label>
+          </div>
+          <div class="letter5">
+            <label for="q5">
+                q
+              </label>
+            <label for="w5">
+                w
+              </label>
+            <label for="e5">
+                e
+              </label>
+            <label for="r5">
+                r
+              </label>
+            <label for="t5">
+                t
+              </label>
+            <label for="y5">
+                y
+              </label>
+            <label for="u5">
+                u
+              </label>
+            <label for="i5">
+                i
+              </label>
+            <label for="o5">
+                o
+              </label>
+            <label for="p5">
+                p
+              </label>
+            <br class="nomob">
+            <label for="a5">
+                a
+              </label>
+            <label for="s5">
+                s
+              </label>
+            <label for="d5">
+                d
+              </label>
+            <label for="f5">
+                f
+              </label>
+            <label for="g5">
+                g
+              </label>
+            <label for="h5">
+                h
+              </label>
+            <label for="j5">
+                j
+              </label>
+            <label for="k5">
+                k
+              </label>
+            <label for="l5">
+                l
+              </label>
+            <br class="nomob">
+            <label for="z5">
+                z
+              </label>
+            <label for="x5">
+                x
+              </label>
+            <label for="c5">
+                c
+              </label>
+            <label for="v5">
+                v
+              </label>
+            <label for="b5">
+                b
+              </label>
+            <label for="n5">
+                n
+              </label>
+            <label for="m5">
+                m
+              </label>
+            <br class="nomob">
+            <label for="reset" style="width:80px">
+                Reset
+              </label>
+          </div>
+        </div>
+      </form>
+    </div>
+    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#000;width:100%">
+    </table>
+    <!--[if true]>
+<table role="presentation" style="width:700px; background: #000; padding: 0 24px 48px;" align="center"><tr><td>
+<![endif]-->
+    <div esd-text="true" class="footer esd-text"
+      style="max-width:700px;margin:0 auto;background:#000;padding:1.5em 3em;mso-padding-alt:0">
+      <a href="https://actionrocket.cmail19.com/t/j-l-ziuujhl-xjukuuddk-e/">
+        <img src="http://i4.cmail19.com/ei/j/E3/E89/397/000234/csimport/instagramicon_3.png" width="40" alt="Instagram" height="40" style="display:inline-block">
+      </a>
+      <a href="https://actionrocket.cmail19.com/t/j-l-ziuujhl-xjukuuddk-s/">
+        <img width="40" alt="Twitter" height="40" src="http://i5.cmail19.com/ei/j/E3/E89/397/000234/csimport/twittericon_4.png" style="display:inline-block">
+      </a>
+      <a href="https://actionrocket.cmail19.com/t/j-l-ziuujhl-xjukuuddk-g/">
+        <img height="40" src="http://i6.cmail19.com/ei/j/E3/E89/397/000234/csimport/linkedinicon_5.png" width="40" alt="LinkedIn" style="display:inline-block">
+      </a>
+      <p class="intro" style="margin-top:1em;color:#fff">
+        This email used a template created by Action Rocket Ltd.
+      </p>
+      <p class="intro" style="margin-top: 1em; color: #fff">
+        ​
+        <small>
+            <a href="https://actionrocket.cmail19.com/t/j-l-ziuujhl-xjukuuddk-yk/" style="text-decoration: underline; color: #fff">
+              Policy
+            </a>
+            •
+            <a href="#" style="color: #ffffff">
+              Unsubscribe
+            </a>
+            •
+            <a href="#" style="color: #ffffff">
+              View&nbsp;online
+            </a>
+          </small>
+      </p>
+    </div>
+    <!--[if true]>
+</td></tr></table>
+<![endif]-->
+  </div>
+</body>
+
+</html>
