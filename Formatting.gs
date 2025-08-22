@@ -41,7 +41,7 @@ function removeDiacritics_(str) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  May 23, 2025
+ * @update  Aug 22, 2025
  */
 function formatSpecificColumns() {
   const sheet = GET_REGISTRATION_SHEET_();
@@ -55,16 +55,16 @@ function formatSpecificColumns() {
   sheet.setFrozenColumns(3);
 
   // 2. Text wrapping
-  getThisRange('R2:R').setWrap(true);  // Comments
+  getThisRange('S2:S').setWrap(true);  // Comments
 
   // 3. Vertical alignment
   getThisRange([
     'D:D',
     'F:F',
     'I:I',
-    'N:N',
-    'P:P',
-    'S:U',
+    'O:O',
+    'Q:Q',
+    'T:V',
   ]).setHorizontalAlignment('center');
 
   // 4. Set number formatting
@@ -75,7 +75,7 @@ function formatSpecificColumns() {
   getThisRange(['F2:F', 'I2:I']).setNumberFormat([phoneFormat]);
 
   const dateFormat = 'yyyy-mm-dd';
-  getThisRange(['N2:N', 'U2:U']).setNumberFormat([dateFormat]);
+  getThisRange(['Q2:Q', 'V2:V']).setNumberFormat([dateFormat]);
 
   // 5. Add checkboxes to non-empty rows
   addMissingCheckboxes_(sheet);

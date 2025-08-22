@@ -173,7 +173,7 @@ function test() {
   //addTriggerForNewRegistration_(4);
   //createPostTemplate();
 
-  processLastImport(101);
+  processLastImport(103);
 
   function createPostTemplate() {
     const keys = Object.keys(COL_MAP);
