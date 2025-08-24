@@ -35,6 +35,7 @@ function onOpen() {
 
     .addSubMenu(ui.createMenu('Import Menu')
       .addItem('Process Import w/ Trigger', addImportTriggerUI_.name)
+      .addItem('Process Import by row', proccssThisImportUI_.name)
     )
 
     .addSubMenu(ui.createMenu('Registrations Menu')
@@ -209,6 +210,27 @@ function addImportTriggerUI_() {
 
   // Execute Function with row input
   const functionName = addTriggerForNewRegistration_.name;
+  confirmAndRunUserChoice_(functionName, fullMsg, selectedRow);
+}
+
+
+/**
+ * Adds a trigger to process a specific row from the import sheet.
+ *
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Aug 23, 2025
+ * @update  Aug 23, 2025
+ */
+function processThisImportUI_() {
+  const result = requestRowInput_();  // {row : int, msg : string}
+  const selectedRow = result.row;
+
+  // Assemble notification message
+  const firstMsg = "↪️ Preparing to import row from 'Import'...";
+  const fullMsg = (result.msg ? `${result.msg}\n\n` : '') + firstMsg;
+
+  // Execute Function with row input
+  const functionName = processThisImport.name;
   confirmAndRunUserChoice_(functionName, fullMsg, selectedRow);
 }
 

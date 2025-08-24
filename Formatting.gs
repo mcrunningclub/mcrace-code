@@ -24,7 +24,6 @@ limitations under the License.
  * @date  Mar 5, 2025
  * @update  Apr 23, 2025
  */
-
 function removeDiacritics_(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -99,4 +98,31 @@ function addMissingCheckboxes_(sheet = GET_REGISTRATION_SHEET_()) {
   const lastRow = getLastRowInReg_();
   const numRows = lastRow - 1;    // Remove header
   sheet.getRange(2, COL_MAP.paymentConfirmed + 1, numRows).insertCheckboxes();
+}
+
+
+
+/**
+ * Sanitizes JSON-like string to prevent `SyntaxError`
+ * 
+ * @param {string} raw  The string to safely parse.
+ * @return {JSON}  Legal JSON object
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>) + ChatGPT
+ * @date  Aug 23, 2025
+ * @update  Aug 23, 2025
+ */
+function safeJSONParse(raw) {
+  if (typeof raw !== "string") return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    // Try to sanitize str
+    let fixed = raw
+      .replace(/,\s*([}\]])/g, "$1")    // Remove trailing commas before `}` or `]`
+      .replace(/:\s*(,|\})/g, ': null$1')    // Replace missing values (e.g., "name": ,) with null
+      .trim();    // Trim whitespace
+
+    return JSON.parse(fixed);
+  }
 }

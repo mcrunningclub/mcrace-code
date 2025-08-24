@@ -41,18 +41,19 @@ function appendToImport(reg) {
  * Processes the last imported registration from the import sheet.
  * 
  * @throws {Error} If the target row is invalid or missing.
+ * @depricated  Logic found in `onChange`.
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 23, 2025
- * @update  Aug 22, 2025
+ * @update  Aug 23, 2025
  */
-function processLastImport(targetRow) {
+function processThisImport(targetRow) {
   const sheet = GET_IMPORT_SHEET_();
   if (!targetRow) throw Error('Invalid target row in Import to process!');
 
   // STEP 1 : Get value of last import
   const data = sheet.getRange(targetRow, 1).getValue();
-  const registrationObj = JSON.parse(data);
+  const registrationObj = safeJSONParse(data);
 
   // STEP 2 : Add processed post data in Registration
   const processed = addNewRegistration_(registrationObj);
@@ -71,7 +72,7 @@ function processLastImport(targetRow) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 24, 2025
- * @update  Apr 24, 2025
+ * @update  Aug 23, 2025
  */
 function onChange(e) {
   // Get details of edit event's sheet
@@ -99,7 +100,7 @@ function onChange(e) {
       const rawData = importSheet.getRange(thisLastRow, 1).getValue();
       console.log(`Received following data:\n${rawData}`);
       
-      const registrationObj = JSON.parse(rawData);
+      const registrationObj = safeJSONParse(rawData);   //JSON.parse(rawData);
      
       // STEP 2 : Add processed post data in Registration
       const processed = addNewRegistration_(registrationObj);
@@ -111,8 +112,14 @@ function onChange(e) {
     }
   }
   catch (error) {
-    console.log('Whoops! Error raised in onChange(e)');
+    console.error('Whoops! Error raised in onChange(e)');
     Logger.log(error);
+
+    const ignoreMessage = 'Please select an active sheet first';
+    const isIgnorable = error.message.includes(ignoreMessage);
+    
+    // Send email notification only if valid error
+    if (!isIgnorable) throw Error(error.message);
   }
 }
 
@@ -120,7 +127,7 @@ function onChange(e) {
 /**
  * Handles HTTP POST requests to process new registrations.
  * 
- * @deprecated Use Zapier automation and `onChange` instead. (2025-04-29)
+ * @deprecated  Use Zapier automation and `onChange` instead. (2025-04-29)
  * @param {GoogleAppsScript.Events.DoPost} e  The event object containing POST data.
  * @returns {GoogleAppsScript.Content.TextOutput}  A text output with the result of the operation.
  * 
