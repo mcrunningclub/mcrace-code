@@ -49,20 +49,33 @@ const COL_MAP = {
   emergencyPhoneNumber: 8,
   level: 9,
   isMember: 10,
-  school: 11,
-  team: 12,
-  signature: 13,
-  signatureDate: 14,
-  guardianSignature: 15,
-  guardianDate: 16,
-  paymentMethod: 17,
-  comments: 18,
-  paymentAmount: 19,
+  isMemberVerified: 11,     // Not in POST data
+  school: 12,
+  team: 13,
+  signature: 14,
+  signatureDate: 15,
+  guardianSignature: 16,
+  guardianDate: 17,
+  paymentMethod: 18,
+  comments: 19,
+  paymentAmount: 20,
   /** COLUMNS NOT IN POST DATA */
-  paymentConfirmed: 20,
-  paymentDate: 21,
-  emailLog: 22,
+  paymentConfirmed: 21,
+  paymentDate: 22,
+  emailLog: 23,
 }
+
+
+const isMemberCheckFormula = 
+`LET(row, ROW(),
+     is_not_member,  INDIRECT("K" & row) = "Not yet",
+     IF(is_not_member, "n/a",
+        LET(email, INDIRECT("G" & row),
+            is_found, COUNTIF('McRUN members'!A:A, email) > 0,
+            IF(is_found, "Yes", "No!")
+          )
+      )
+)`
 
 
 /**

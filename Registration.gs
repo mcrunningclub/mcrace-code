@@ -58,7 +58,7 @@ function onNewRegistration_({ newRow: row, member: memberArr }) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  Aug 22, 2025
+ * @update  Aug 26, 2025
  */
 function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
@@ -73,6 +73,9 @@ function addNewRegistration_(registrationObj) {
   // Set formatted values in registration sheet
   const newRow = getLastRowInReg_() + 1;
   sheet.getRange(newRow, 1, 1, formatted.length).setValues([formatted]);
+
+  // Add verification formula
+  setMemberCheckFormula(newRow);
 
   // Return GSheet row and values for payment
   Logger.log(`Set following values in Registrations (row ${newRow}): ${formatted}`);
@@ -98,6 +101,12 @@ function addNewRegistration_(registrationObj) {
   // Stripe amount may differ due to coupons
   function validatePaymentAmount(key) {
     return registrationObj?.['stripeAmount'] || registrationObj?.[key];
+  }
+
+  // Add formula in `Verify if Member` col
+  function setMemberCheckFormula(row) {
+    const isMemberCheckCell = sheet.getRange(row, COL_MAP.isMemberVerified + 1);  // 0-indexed to 1-indexed
+    isMemberCheckCell.setFormula(isMemberCheckFormula);
   }
 }
 
@@ -173,7 +182,7 @@ function test() {
   //addTriggerForNewRegistration_(4);
   //createPostTemplate();
 
-  //processThisImport(103);
+  processThisImport(122);
 
   function createPostTemplate() {
     const keys = Object.keys(COL_MAP);
