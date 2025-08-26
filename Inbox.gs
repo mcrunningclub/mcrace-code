@@ -142,7 +142,7 @@ function getMatchingPayments_(sender, maxMatches) {
 
 
 
-/** 2️⃣ 👉 FUNCTION HANDLING STRIPE OR ZEFFY TRANSACTIONS 👈  *\
+/** 2️⃣ 👉 FUNCTIONS HANDLING STRIPE AND ZEFFY TRANSACTIONS 👈  *\
 
 /**
  * Processes a Gmail thread to find a matching member's payment email.
@@ -224,7 +224,7 @@ function processInteracThreads_(thread, searchTerms) {
  * 
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Apr 21, 2025
- * @update  May 20, 2025
+ * @update  Aug 26, 2025
  */
 function notifyUnidentifiedPayment_(fullName) {
   const emailBody = 
@@ -238,12 +238,12 @@ function notifyUnidentifiedPayment_(fullName) {
   Automatic email created by 'McRace Code' in Google Apps Script.
   `
   const email = {
-    to: INTERNAL_EMAIL,
+    to: CLUB_EMAIL,
     subject: 'ATTENTION: Missing Member Payment for McRace 2025!',
     body: emailBody.replace(/[ \t]{2,}/g, ''),
-    options: {
-      cc: CLUB_EMAIL
-    }
+    // options: {
+    //   cc: INTERNAL_EMAIL
+    // }
   };
 
   GmailApp.sendEmail(email.to, email.subject, email.body, email.options);
