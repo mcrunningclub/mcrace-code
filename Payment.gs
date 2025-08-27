@@ -32,6 +32,39 @@ const STRIPE_EMAIL = 'stripe.com';
 
 
 /**
+ * Verifies and sets the payment status for a member in the `Registration` sheet.
+ * 
+ * If the payment is found, marks the payment as confirmed and sets the payment date.
+ * If not found, schedules a trigger to recheck the inbox and sends a notification if necessary.
+ * 
+ * @param {integer} [row=getLastRowInReg_()]  The row to update in the `Registration` sheet.
+ * @param {Object} [feeDetails=extractFromSheet_()]  The member's payment details.
+ * @returns {boolean}  True if the payment is found, otherwise false.
+ * 
+ * @throws {Error}  If payment verification fails after multiple attempts.
+ * 
+ * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
+ * @date  Apr 21, 2025
+ * @update  May 23, 2025
+ */
+function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet_(row)) {
+  // Find member transaction using packaged info (name, payment method, ...)
+  const isFound = checkPayment_(feeDetails);
+  if (isFound) {
+    setFeePaid_(row);
+    console.log(`Successfully found transaction email for ${feeDetails.fullName}!`);  // Log success message;
+  }
+  else {
+    // 1) Create a scheduled trigger to recheck email inbox
+    // 2) After max tries, send an email notification to McRUN for missing payment
+    console.error(`Unable to find payment confirmation for '${feeDetails.fullName}'. Creating new scheduled trigger to check later.`);
+    createNewFeeTrigger_(row, feeDetails);
+  }
+  return isFound;
+}
+
+
+/**
  * Checks the payment status for a member based on their payment method.
  * 
  * If the payment method includes "CC", it checks online payments (e.g., Zeffy or Stripe).
@@ -49,7 +82,7 @@ function checkPayment_({ fName, lName, email, paymentMethod }) {
     return checkOnlinePayment_({ firstName: fName, lastName: lName, email: email });
   }
   else if (paymentMethod.includes('Interac')) {
-    return checkInteracPayment_({ firstName: fName, lastName: lName });
+    return checkInteracPayment_({ firstName: fName, lastName: lName, email: email });
   }
 
   return false;
@@ -144,19 +177,19 @@ function setFeePaid_(row) {
  *  
  * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
  * @date  Mar 21, 2025
- * @update  Jun 7, 2025
+ * @update  Aug 26, 2025
  */
 function createSearchTerms_(member) {
   const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   const nameParts = [
-    member.firstName,
-    member.lastName.replace(/[-\s]/g, '[-\\s]?'),  // Allow optional hyphen/space
+    member.firstName && escapeRegex(member.firstName),  // Must escape regex before construction
+    member.lastName && member.lastName.replace(/[-\s]/g, '[-\\s]?'),  // Allow optional hyphen/space
   ].filter(Boolean);
 
   // Construct regex for ordered matching: \bWord\b.*?\bWord\b...
   const orderedNamePattern = nameParts
-    .map(part => `\\b${escapeRegex(part)}\\b`)
+    .map(part => `\\b${part}\\b`)
     .join('.*?');
 
   const diacriticPattern = removeDiacritics_(orderedNamePattern);
@@ -164,11 +197,12 @@ function createSearchTerms_(member) {
   const searchTerms = [
     orderedNamePattern,
     diacriticPattern,
-    member.email,
+    member.email && escapeRegex(member.email),
   ].filter(Boolean);
 
   return searchTerms;
 }
+
 
 
 // /**

@@ -66,6 +66,7 @@ const COL_MAP = {
 }
 
 
+/** GSheet formula to automatically confirm if registered is current McRUN member */
 const isMemberCheckFormula = 
 `LET(row, ROW(),
      is_not_member,  INDIRECT("K" & row) = "Not yet",

@@ -35,7 +35,7 @@ function onOpen() {
 
     .addSubMenu(ui.createMenu('Import Menu')
       .addItem('Process Import w/ Trigger', addImportTriggerUI_.name)
-      .addItem('Process Import by row', proccssThisImportUI_.name)
+      .addItem('Process Import by row', processThisImportUI_.name)
     )
 
     .addSubMenu(ui.createMenu('Registrations Menu')

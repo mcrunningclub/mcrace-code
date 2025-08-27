@@ -64,20 +64,20 @@ function addNewRegistration_(registrationObj) {
   const sheet = GET_REGISTRATION_SHEET_();
   const entries = Object.entries(COL_MAP);
 
-  // Push values to respective index using key-index mapping
+  // 1. Push values to respective index using key-index mapping
   const formatted = entries.reduce((acc, [key, i]) => {
     acc[i] = format(key);
     return acc;
   }, new Array(entries.length));
 
-  // Set formatted values in registration sheet
+  // 2a. Set formatted values in registration sheet
   const newRow = getLastRowInReg_() + 1;
   sheet.getRange(newRow, 1, 1, formatted.length).setValues([formatted]);
 
-  // Add verification formula
+  // 2b. Add verification formula for McRUN membership
   setMemberCheckFormula(newRow);
 
-  // Return GSheet row and values for payment
+  // 3. Return GSheet row and values for payment
   Logger.log(`Set following values in Registrations (row ${newRow}): ${formatted}`);
   return { newRow, member: formatted };
 
@@ -137,39 +137,6 @@ function extractPaymentInfo_(memberArr) {
   };
 }
 
-
-/**
- * Verifies and sets the payment status for a member in the `Registration` sheet.
- * 
- * If the payment is found, marks the payment as confirmed and sets the payment date.
- * If not found, schedules a trigger to recheck the inbox and sends a notification if necessary.
- * 
- * @param {integer} [row=getLastRowInReg_()]  The row to update in the `Registration` sheet.
- * @param {Object} [feeDetails=extractFromSheet_()]  The member's payment details.
- * @returns {boolean}  True if the payment is found, otherwise false.
- * 
- * @throws {Error}  If payment verification fails after multiple attempts.
- * 
- * @author [Andrey Gonzalez](<andrey.gonzalez@mail.mcgill.ca>)
- * @date  Apr 21, 2025
- * @update  May 23, 2025
- */
-function checkAndSetPayment(row = getLastRowInReg_(), feeDetails = extractFromSheet_(row)) {
-  // Find member transaction using packaged info (name, payment method, ...)
-  const isFound = checkPayment_(feeDetails);
-  if (isFound) {
-    setFeePaid_(row);
-    console.log(`Successfully found transaction email for ${feeDetails.fullName}!`);  // Log success message;
-  }
-  else {
-    // 1) Create a scheduled trigger to recheck email inbox
-    // 2) After max tries, send an email notification to McRUN for missing payment
-    console.error(`Unable to find payment confirmation for '${feeDetails.fullName}'. Creating new scheduled trigger to check later.`);
-    createNewFeeTrigger_(row, feeDetails);
-  }
-  return isFound;
-}
-
 /** Helper Function */
 function extractFromSheet_(row) {
   const sheet = GET_REGISTRATION_SHEET_();
@@ -182,7 +149,8 @@ function test() {
   //addTriggerForNewRegistration_(4);
   //createPostTemplate();
 
-  processThisImport(122);
+  //checkAndSetPayment(130);
+  //processThisImport(122);
 
   function createPostTemplate() {
     const keys = Object.keys(COL_MAP);
