@@ -14,12 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/** LABELS FOR GMAIL ACCOUNT */
+
+/**
+ * Gmail label name for Stripe/Zeffy payment emails
+ */
 const ONLINE_LABEL = 'Fee Payments/Online Emails';
+
+/**
+ * Gmail label name for Interac payment emails
+ */
 const INTERAC_LABEL = 'Fee Payments/Interac Emails';
 
 
-/** 1️⃣ HELPER FUNCTIONS FOR ZEFFY AND INTERAC */
+// 1️⃣ HELPER FUNCTIONS FOR ZEFFY AND INTERAC
 
 /**
  * Retrieves a Gmail label by its name.
@@ -142,7 +149,7 @@ function getMatchingPayments_(sender, maxMatches) {
 
 
 
-/** 2️⃣ 👉 FUNCTIONS HANDLING STRIPE AND ZEFFY TRANSACTIONS 👈  *\
+// 2️⃣ 👉 FUNCTIONS HANDLING STRIPE AND ZEFFY TRANSACTIONS 👈
 
 /**
  * Processes a Gmail thread to find a matching member's payment email.
@@ -185,7 +192,7 @@ function processOnlineThread_(thread, searchTerms) {
 
 
 
-/**  3️⃣ 👉 FUNCTIONS HANDLING INTERAC TRANSACTIONS 👈  */
+//  3️⃣ 👉 FUNCTIONS HANDLING INTERAC TRANSACTIONS 👈
 
 /**
  * Processes Interac e-Transfer threads to find a matching member's payment.

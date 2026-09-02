@@ -14,9 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * Function to run when trigger is called
+ */
 const TRIGGER_FUNC = runFeeChecker.name;
+/**
+ * Name to include in all payment check triggers
+ */
 const TRIGGER_BASE_ID = 'feeCheckTrigger';
+/**
+ * Maximum number of attempts to find payment before trigger is deleted
+ */
 const FEE_MAX_CHECKS = 2;
+/**
+ * Time between trigger calls (in minutes)
+ */
 const TRIGGER_FREQUENCY = 5;  // Minutes
 
 /**
@@ -102,70 +114,71 @@ function runFeeChecker() {
     }
   }
 
-  /**
-   * Checks if the payment has already been confirmed for a member.
-   * 
-   * @param {integer} memberRow  The row number in the `Registration` sheet for the member.
-   * @returns {boolean}  True if the payment is confirmed, otherwise false.
-   */
-  function isPaymentFound(memberRow) {
-    const sheet = GET_REGISTRATION_SHEET_();
-    const confirmedCol = COL_MAP.paymentConfirmed + 1;
-    return sheet.getRange(memberRow, confirmedCol).getValue();    // Bool value
-  }
+}
 
-  /**
-   * Increments the number of attempts for a trigger and updates the script properties.
-   * 
-   * @param {string} key  The key for the trigger in script properties.
-   * @param {Object} triggerData  The trigger data to update.
-   */
-  function incrementTries(key, triggerData) {
-    Logger.log(`Fee payment check #${triggerData.tries} for '${triggerData.feeDetails.fullName}'`);
-    triggerData.tries++;
-    scriptProperties.setProperty(key, JSON.stringify(triggerData));
-  }
+/**
+ * Checks if the payment has already been confirmed for a member.
+ * 
+ * @param {integer} memberRow  The row number in the `Registration` sheet for the member.
+ * @returns {boolean}  True if the payment is confirmed, otherwise false.
+ */
+function isPaymentFound(memberRow) {
+  const sheet = GET_REGISTRATION_SHEET_();
+  const confirmedCol = COL_MAP.paymentConfirmed + 1;
+  return sheet.getRange(memberRow, confirmedCol).getValue();    // Bool value
+}
 
-  /**
-   * Checks the payment status for a member again.
-   * 
-   * @param {Object} feeDetails  The member's payment details.
-   * @param {number} rowNum  The row number in GSheet.
-   */
-  function checkThisFeeAgain(feeDetails, rowNum) {
-    const isPaid = checkPayment_(feeDetails);
-    if (isPaid) {
-      setFeePaid_(rowNum);
+/**
+ * Increments the number of attempts for a trigger and updates the script properties.
+ * 
+ * @param {string} key  The key for the trigger in script properties.
+ * @param {Object} triggerData  The trigger data to update.
+ */
+function incrementTries(key, triggerData) {
+  Logger.log(`Fee payment check #${triggerData.tries} for '${triggerData.feeDetails.fullName}'`);
+  triggerData.tries++;
+  scriptProperties.setProperty(key, JSON.stringify(triggerData));
+}
+
+/**
+ * Checks the payment status for a member again.
+ * 
+ * @param {Object} feeDetails  The member's payment details.
+ * @param {number} rowNum  The row number in GSheet.
+ */
+function checkThisFeeAgain(feeDetails, rowNum) {
+  const isPaid = checkPayment_(feeDetails);
+  if (isPaid) {
+    setFeePaid_(rowNum);
+  }
+  Logger.log(`➡️ Payment verification for '${feeDetails.fullName}' returned: ${isPaid}`);
+}
+
+/**
+ * Cleans up a trigger by deleting it and removing its data from script properties.
+ * 
+ * @param {string} key  The key for the trigger in script properties.
+ * @param {string} triggerId  The unique ID of the trigger to delete.
+ */
+function cleanUpTrigger(key, triggerId) {
+  deleteTriggerById(triggerId);
+  scriptProperties.deleteProperty(key);
+}
+
+/**
+ * Deletes a trigger by its unique ID.
+ * 
+ * @param {string} triggerId  The unique ID of the trigger to delete.
+ * @throws {Error}  If the trigger cannot be found.
+ */
+function deleteTriggerById(triggerId) {
+  const triggers = ScriptApp.getProjectTriggers();
+  for (const trigger of triggers) {
+    if (trigger.getUniqueId() === triggerId) {
+      ScriptApp.deleteTrigger(trigger);
+      Logger.log(`Trigger with id ${triggerId} deleted!`);
+      return;
     }
-    Logger.log(`➡️ Payment verification for '${feeDetails.fullName}' returned: ${isPaid}`);
   }
-
-  /**
-   * Cleans up a trigger by deleting it and removing its data from script properties.
-   * 
-   * @param {string} key  The key for the trigger in script properties.
-   * @param {string} triggerId  The unique ID of the trigger to delete.
-   */
-  function cleanUpTrigger(key, triggerId) {
-    deleteTriggerById(triggerId);
-    scriptProperties.deleteProperty(key);
-  }
-
-  /**
-   * Deletes a trigger by its unique ID.
-   * 
-   * @param {string} triggerId  The unique ID of the trigger to delete.
-   * @throws {Error}  If the trigger cannot be found.
-   */
-  function deleteTriggerById(triggerId) {
-    const triggers = ScriptApp.getProjectTriggers();
-    for (const trigger of triggers) {
-      if (trigger.getUniqueId() === triggerId) {
-        ScriptApp.deleteTrigger(trigger);
-        Logger.log(`Trigger with id ${triggerId} deleted!`);
-        return;
-      }
-    }
-    throw new Error(`⚠️ Trigger with id ${triggerId} not found`);
-  }
+  throw new Error(`⚠️ Trigger with id ${triggerId} not found`);
 }

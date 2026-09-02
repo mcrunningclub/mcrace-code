@@ -14,12 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * Club email address
+ */
 const CLUB_EMAIL = 'mcrunningclub@ssmu.ca';
+/**
+ * Club internal email address
+ */
 const INTERNAL_EMAIL = 'mcrunningclubinternal@ssmu.ca';
 
-/** SENDER INFORMATION */
+/**
+ * Email address that Zeffy payment emails are sent from
+ */
 const ZEFFY_EMAIL = 'contact@zeffy.com';
+
+/**
+ * Email address that Interac payment emails are sent from
+ */
 const INTERAC_EMAIL = 'interac.ca';    // Interac email addresses end in "interac.ca"
+
+/**
+ * Email address that Stripe payment emails are sent from
+ */
 const STRIPE_EMAIL = 'stripe.com';
 
 /**

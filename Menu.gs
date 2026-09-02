@@ -191,7 +191,7 @@ function isValidRow_(row) {
 }
 
 
-/** IMPORT MENU FUNCTIONS */
+// IMPORT MENU FUNCTIONS
 
 /**
  * Adds a trigger to process a specific row from the import sheet.
@@ -235,7 +235,7 @@ function processThisImportUI_() {
 }
 
 
-/** REGISTRATIONS MENU FUNCTIONS */
+// REGISTRATIONS MENU FUNCTIONS
 
 /**
  * Prettifies the registration sheet by applying formatting rules.

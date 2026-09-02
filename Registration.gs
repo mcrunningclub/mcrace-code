@@ -137,7 +137,13 @@ function extractPaymentInfo_(memberArr) {
   };
 }
 
-/** Helper Function */
+/** 
+ * Extracts payment information using row number
+ * 
+ * @param {number} row  Row to get information from
+ * 
+ * @returns {Member}  A Member object containing the payment information.
+ */
 function extractFromSheet_(row) {
   const sheet = GET_REGISTRATION_SHEET_();
   const memberArr = sheet.getSheetValues(row, 1, 1, -1)[0];
@@ -149,8 +155,13 @@ function test() {
   //addTriggerForNewRegistration_(4);
   //createPostTemplate();
 
-  //checkAndSetPayment(130);
-  //processThisImport(122);
+  //checkAndSetPayment(153);
+
+  for (let i=252; i <= 253; i++) {
+    processThisImport(i);
+    console.log(`\nROW ${i} DONE!\n\n`);
+  }
+  
 
   function createPostTemplate() {
     const keys = Object.keys(COL_MAP);

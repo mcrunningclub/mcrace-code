@@ -14,19 +14,46 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/** SHEET CONSTANTS */
+/** 
+ * Name of sheet with registrations
+ */
 const SHEET_NAME = 'Registrations';
+
+/**
+ * ID of sheet with registrations
+ */
 const SHEET_ID = 0;
+
+/**
+ * Sheet with registrations
+ */
 const REGISTRATION_SHEET = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
 
+/**
+ * Name of sheet with imports from registration form
+ */
 const IMPORT_NAME = 'Import';
+/**
+ * ID of sheet with imports from registration form
+ */
 const IMPORT_SHEET_ID = 1261031931;
+/**
+ * Sheet with imports from registration form
+ */
 const IMPORT_SHEET = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(IMPORT_NAME);
 
-// Returns the `Registration` sheet, falling back to the sheet ID if the name is unavailable.
+/**
+ * Returns the `Registration` sheet, falling back to the sheet ID if the name is unavailable.
+ * 
+ * @returns {SpreadsheetApp.Sheet} Registrations sheet
+ */
 const GET_REGISTRATION_SHEET_ = () => REGISTRATION_SHEET || SpreadsheetApp.getActiveSpreadsheet().getSheetById(SHEET_ID);
 
-// Returns the `Import` sheet, falling back to the sheet ID if the name is unavailable.
+/**
+ * Returns the `Import` sheet, falling back to the sheet ID if the name is unavailable.
+ * 
+ * @returns {SpreadsheetApp.Sheet} Import sheet
+ */
 const GET_IMPORT_SHEET_ = () => IMPORT_SHEET || SpreadsheetApp.getActiveSpreadsheet().getSheetById(IMPORT_SHEET_ID);
 
 const TIMEZONE = Session.getScriptTimeZone();
@@ -34,6 +61,7 @@ const TIMEZONE = Session.getScriptTimeZone();
 /**
  * Maps column names to their respective indices in the `Registration` sheet.
  * Keys must match the post data from the form submission.
+ * Not in post data: column 11, 21, 22, 23
  * 
  * @constant {Object<string, number>}
  */
@@ -66,7 +94,9 @@ const COL_MAP = {
 }
 
 
-/** GSheet formula to automatically confirm if registered is current McRUN member */
+/** 
+ * GSheet formula to automatically confirm if registered is current McRUN member
+ */
 const isMemberCheckFormula = 
 `LET(row, ROW(),
      is_not_member,  INDIRECT("K" & row) = "Not yet",
